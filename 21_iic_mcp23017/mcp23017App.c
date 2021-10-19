@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 			write(fd,&databuf[0],1);//把A狀態寫到B
 			printf("IOA = %x IOB = %x\r\n",  databuf[0], databuf[1]);
 		}
-		usleep(2000000); /*100ms */
+		usleep(2000000); /*1000ms */
 	}
 	close(fd);	/* 关闭文件 */	
 	return 0;
