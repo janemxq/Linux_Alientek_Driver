@@ -4,7 +4,7 @@
 KERNELDIR := /home/alientek/alpha/alientek-alpha/kernel-alientek/linux-imx-4.1.15-2.1.0-gad512fa-v1.7
 CURRENT_PATH := $(shell pwd)
 
-obj-m := icm20608.o
+obj-m := ad7799.o
 
 build: kernel_modules
 

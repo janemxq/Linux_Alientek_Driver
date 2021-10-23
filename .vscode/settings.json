@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "pinctrl-mcp23s08.h": "c",
-        "mcp23017reg.h": "c"
+        "mcp23017reg.h": "c",
+        "ad7799reg.h": "c"
     }
 }

@@ -32,7 +32,7 @@ Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 日志	   	: 初版V1.0 2019/9/2 左忠凯创建
 ***************************************************************/
 #define ICM20608_CNT	1
-#define ICM20608_NAME	"icm20608"
+#define ICM20608_NAME	"icm20608" 
 
 struct icm20608_dev {
 	dev_t devid;				/* 设备号 	 */

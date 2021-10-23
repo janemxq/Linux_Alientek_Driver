@@ -371,6 +371,7 @@ static ssize_t mcp23017_read(struct file *filp, char __user *buf, size_t cnt, lo
 	data[1] = MCP23017_READ_GPIO(dev,MCP23017_PORTB);
 	// mcp23017_readdata(dev);
 	err = copy_to_user(buf, data, sizeof(data));
+	printk("mcp23017_read buf[0]=%x  buf[1]=%x \r\n",buf[0],buf[1]);
 	return 0;
 }
 /*
@@ -392,7 +393,7 @@ static ssize_t mcp23017_write(struct file *filp, char __user *buf, size_t cnt, l
 		printk("kernel write failed!\r\n");
 		return -EFAULT;
 	}
-	printk("mcp23017_write111 data[0]=%x \r\n",data[0]);
+	printk("mcp23017_write data[0]=%x \r\n",data[0]);
 	MCP23017_WRITE_GPIO(dev,MCP23017_PORTB,data[0]);
 	return 0;
 }
