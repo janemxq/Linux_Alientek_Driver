@@ -35,17 +35,74 @@ Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
  * @param - argv 	: 具体参数
  * @return 			: 0 成功;其他 失败
  */
+// int main(int argc, char *argv[])
+// {
+// 	int fd;
+// 	char *filename;
+// 	unsigned char data[9];
+// 	long lADValue[3];
+// 	double ADValues[3];
+// 	int ch=0;
+
+// 	int ret = 0;
+
+// 	if (argc != 2) {
+// 		printf("Error Usage!\r\n");
+// 		return -1;
+// 	}
+
+// 	filename = argv[1];
+// 	fd = open(filename, O_RDWR);
+// 	if(fd < 0) {
+// 		printf("can't open file %s\r\n", filename);
+// 		return -1;
+// 	}
+
+// 	while (1) {
+// 		ret = read(fd, data, 1);
+// 		printf("ret =%d \r\n",ret);
+// 		if(ret == 0) { 	/* 数据读取成功 */
+// 			for(ch=0;ch<3;ch++)
+// 			{
+// 			 lADValue[ch]=0;
+//              lADValue[ch] += (data[3*ch] << 16);
+// 		     lADValue[ch] += (data[3*ch+1] << 8);
+// 		     lADValue[ch] += (data[3*ch+2] << 0);
+// 			 ADValues[ch]=analyzeAD7799_Data(lADValue[ch]);
+// 			}		
+// 			printf("\r\n原始值:\r\n");
+// 			printf("通道1 = %06X, 通道2 = %06X, 通道3 = %06X\r\n",  lADValue[0],  lADValue[1],  lADValue[2]);
+// 			printf("实际值:");
+// 			printf("通道1 = %.2f 毫伏, 通道2= %.2f 毫伏, 通道3 = %.2f 毫伏\r\n", ADValues[0], ADValues[1], ADValues[2]);
+// 		}
+// 		usleep(1000000); /*100ms */
+// 	}
+// 	close(fd);	/* 关闭文件 */	
+// 	return 0;
+// }
+double analyzeAD7799_Data(long data)
+{
+	long value = (data - 0X800000);
+	return (float)((float)value*(float)AD7799_RefmV)/(0X800000*AD7799_GAIN);	//0X800000:2.048V    0X000000:0V
+
+}
 int main(int argc, char *argv[])
 {
 	int fd;
 	char *filename;
-	unsigned char data[9];
-	long lADValue[3];
+	unsigned int databuf[9];//必须和驱动里面read函数的类型保持一致，不然会卡死!!!!
+	unsigned char data[14];
+	signed int gyro_x_adc, gyro_y_adc, gyro_z_adc;
+	signed int accel_x_adc, accel_y_adc, accel_z_adc;
+	signed int temp_adc;
+    long lADValue[3];
 	double ADValues[3];
-	int ch=0;
+	float gyro_x_act, gyro_y_act, gyro_z_act;
+	float accel_x_act, accel_y_act, accel_z_act;
+	float temp_act;
 
 	int ret = 0;
-
+    int ch=0;
 	if (argc != 2) {
 		printf("Error Usage!\r\n");
 		return -1;
@@ -59,14 +116,41 @@ int main(int argc, char *argv[])
 	}
 
 	while (1) {
-		ret = read(fd, data, sizeof(data));
-		if(ret == 0) { 	/* 数据读取成功 */
+		ret = read(fd, databuf, sizeof(databuf));
+		if(ret == 0) { 			/* 数据读取成功 */
+			// gyro_x_adc = databuf[0];
+			// gyro_y_adc = databuf[1];
+			// gyro_z_adc = databuf[2];
+			// accel_x_adc = databuf[3];
+			// accel_y_adc = databuf[4];
+			// accel_z_adc = databuf[5];
+			// temp_adc = databuf[6];
+
+			// /* 计算实际值 */
+			// gyro_x_act = (float)(gyro_x_adc)  / 16.4;
+			// gyro_y_act = (float)(gyro_y_adc)  / 16.4;
+			// gyro_z_act = (float)(gyro_z_adc)  / 16.4;
+			// accel_x_act = (float)(accel_x_adc) / 2048;
+			// accel_y_act = (float)(accel_y_adc) / 2048;
+			// accel_z_act = (float)(accel_z_adc) / 2048;
+			// temp_act = ((float)(temp_adc) - 25 ) / 326.8 + 25;
+
+
+			// printf("\r\n原始值:\r\n");
+			// printf("gx = %d, gy = %d, gz = %d\r\n", gyro_x_adc, gyro_y_adc, gyro_z_adc);
+			// printf("ax = %d, ay = %d, az = %d\r\n", accel_x_adc, accel_y_adc, accel_z_adc);
+			// printf("temp = %d\r\n", temp_adc);
+			// printf("实际值:");
+			// printf("act gx = %.2f°/S, act gy = %.2f°/S, act gz = %.2f°/S\r\n", gyro_x_act, gyro_y_act, gyro_z_act);
+			// printf("act ax = %.2fg, act ay = %.2fg, act az = %.2fg\r\n", accel_x_act, accel_y_act, accel_z_act);
+			// printf("act temp = %.2f°C\r\n", temp_act);
+
 			for(ch=0;ch<3;ch++)
 			{
 			 lADValue[ch]=0;
-             lADValue[ch] += (data[3*ch] << 16);
-		     lADValue[ch] += (data[3*ch+1] << 8);
-		     lADValue[ch] += (data[3*ch+2] << 0);
+             lADValue[ch] += (databuf[3*ch] << 16);
+		     lADValue[ch] += (databuf[3*ch+1] << 8);
+		     lADValue[ch] += (databuf[3*ch+2] << 0);
 			 ADValues[ch]=analyzeAD7799_Data(lADValue[ch]);
 			}		
 			printf("\r\n原始值:\r\n");
@@ -74,14 +158,8 @@ int main(int argc, char *argv[])
 			printf("实际值:");
 			printf("通道1 = %.2f 毫伏, 通道2= %.2f 毫伏, 通道3 = %.2f 毫伏\r\n", ADValues[0], ADValues[1], ADValues[2]);
 		}
-		sleep(1); /*1s */
+		usleep(1000000); /*100ms */
 	}
 	close(fd);	/* 关闭文件 */	
 	return 0;
-}
-double analyzeAD7799_Data(long data)
-{
-	long value = (data - 0X800000);
-	return (float)((float)value*(float)AD7799_RefmV)/(0X800000*AD7799_GAIN);	//0X800000:2.048V    0X000000:0V
-
 }

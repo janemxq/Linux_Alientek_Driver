@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 			printf("act ax = %.2fg, act ay = %.2fg, act az = %.2fg\r\n", accel_x_act, accel_y_act, accel_z_act);
 			printf("act temp = %.2f°C\r\n", temp_act);
 		}
-		usleep(100000); /*100ms */
+		usleep(1000000); /*100ms */
 	}
 	close(fd);	/* 关闭文件 */	
 	return 0;

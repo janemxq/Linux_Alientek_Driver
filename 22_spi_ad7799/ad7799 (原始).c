@@ -384,18 +384,18 @@ static ssize_t ad7799_read(struct file *filp, char __user *buf, size_t cnt, loff
 	long err = 0;
 	printk("ad7799_read \r\n");
 	struct ad7799_dev *dev = (struct ad7799_dev *)filp->private_data;
-	ad7799_readdata(dev);
-	data[0] = dev->rawConversion[0]>>16;
-	data[1] = dev->rawConversion[0]>>8;
-	data[2] = (dev->rawConversion[0]&0xff);
-	data[3] = dev->rawConversion[1]>>16;;
-	data[4] = dev->rawConversion[1]>>8;
-	data[5] = (dev->rawConversion[1]&0xff);
-	data[6] = dev->rawConversion[2]>>16;;
-	data[7] = dev->rawConversion[2]>>8;
-	data[8] = (dev->rawConversion[2]&0xff);
+	// ad7799_readdata(dev);
+	// data[0] = dev->rawConversion[0]>>16;
+	// data[1] = dev->rawConversion[0]>>8;
+	// data[2] = (dev->rawConversion[0]&0xff);
+	// data[3] = dev->rawConversion[1]>>16;;
+	// data[4] = dev->rawConversion[1]>>8;
+	// data[5] = (dev->rawConversion[1]&0xff);
+	// data[6] = dev->rawConversion[2]>>16;;
+	// data[7] = dev->rawConversion[2]>>8;
+	// data[8] = (dev->rawConversion[2]&0xff);
 	err = copy_to_user(buf, data, sizeof(data));
-	return 0;
+	return 9;
 }
 
 /*
