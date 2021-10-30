@@ -55,7 +55,7 @@ struct ad7799_dev {
 };
 
 static struct ad7799_dev ad7799dev;
-
+static u8 chipNum;
 /*
  * @description	: 从ad7799读取多个寄存器数据
  * @param - dev:  ad7799设备
@@ -335,7 +335,7 @@ void ad7799_readdata(struct ad7799_dev *dev)
 	u8 nTimeout=10;
 	u8 ChannelBuf[3]={AD7799_CH_AIN1P_AIN1M,AD7799_CH_AIN2P_AIN2M,AD7799_CH_AIN3P_AIN3M};		//通道1  通道2 通道3
 	u8 channel=0;
-	printk("ad7799_readdata 111\r\n");
+	printk("ad7799_readdata 芯片号:%d\r\n",chipNum);
 	for(channel=0;channel<3;channel++)
 	{
 		AD7799_SetChannel(dev,ChannelBuf[channel]);//通道设置.		0~1
@@ -397,7 +397,31 @@ static ssize_t ad7799_read(struct file *filp, char __user *buf, size_t cnt, loff
 	err = copy_to_user(buf, data, sizeof(data));
 	return 0;
 }
+/*
+ * @description		: 从设备读取数据 
+ * @param - filp 	: 要打开的设备文件(文件描述符)
+ * @param - buf 	: 返回给用户空间的数据缓冲区
+ * @param - cnt 	: 要读取的数据长度
+ * @param - offt 	: 相对于文件首地址的偏移
+ * @return 			: 读取的字节数，如果为负值，表示读取失败
+ */
+static ssize_t ad7799_write(struct file *filp, char __user *buf, size_t cnt, loff_t *off)
+{
+	int retvalue;
+	unsigned char databuf[1];
+	unsigned char ledstat;
+	struct gpioled_dev *dev = filp->private_data;
 
+	retvalue = copy_from_user(databuf, buf, cnt);
+	if(retvalue < 0) {
+		printk("kernel write failed!\r\n");
+		return -EFAULT;
+	}
+
+	chipNum = databuf[0];		/* 获取芯片号 */
+	printk("ad7799_write chipNum=%d\r\n",chipNum);	
+	return 0;
+}
 /*
  * @description		: 关闭/释放设备
  * @param - filp 	: 要关闭的设备文件(文件描述符)
@@ -413,6 +437,7 @@ static const struct file_operations ad7799_ops = {
 	.owner = THIS_MODULE,
 	.open = ad7799_open,
 	.read = ad7799_read,
+	.write = ad7799_write,
 	.release = ad7799_release,
 };
 
