@@ -91,7 +91,6 @@ int main(int argc, char *argv[])
 	int fd;
 	char *filename;
 	unsigned int databuf[9];//必须和驱动里面read函数的类型保持一致，不然会卡死!!!!
-	unsigned char data[14];
 	signed int gyro_x_adc, gyro_y_adc, gyro_z_adc;
 	signed int accel_x_adc, accel_y_adc, accel_z_adc;
 	signed int temp_adc;

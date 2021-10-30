@@ -3,7 +3,7 @@
 # 出厂系统的
 KERNELDIR := /home/alientek/alpha/alientek-alpha/kernel-alientek
 CURRENT_PATH := $(shell pwd)
-
+# 不编译到内核，动态加载
 obj-m := ad7799.o
 
 build: kernel_modules

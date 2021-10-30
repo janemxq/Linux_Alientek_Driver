@@ -335,25 +335,25 @@ void ad7799_readdata(struct ad7799_dev *dev)
 	u8 nTimeout=10;
 	u8 ChannelBuf[3]={AD7799_CH_AIN1P_AIN1M,AD7799_CH_AIN2P_AIN2M,AD7799_CH_AIN3P_AIN3M};		//通道1  通道2 通道3
 	u8 channel=0;
-	printk("ad7799_readdata \r\n");
+	printk("ad7799_readdata 111\r\n");
 	for(channel=0;channel<3;channel++)
 	{
-		// AD7799_SetChannel(dev,ChannelBuf[channel]);//通道设置.		0~1
+		AD7799_SetChannel(dev,ChannelBuf[channel]);//通道设置.		0~1
 		mdelay(10);
-		// ad7799_read_regs(dev, AD7799_REG_DATA, data, 3);//清空之前的AD
+		ad7799_read_regs(dev, AD7799_REG_DATA, data, 3);//清空之前的AD
 		printk("channel=%d \r\n",channel);
-		// while( !AD7799_Ready(dev))		//1~2
-		// {
-		// 	mdelay(1);
-		// 	nTimeout--;
-		// 	if(nTimeout<=0)
-		// 	{
-		// 		nTimeout=10;
-		// 		break;
-		// 	}
-		// }
-		// ad7799_read_regs(dev, AD7799_REG_DATA, data, 3);//0:通道1 1:通道2
-		// dev->rawConversion[channel] = (uint32_t)((data[0] << 16) | (data[1]<< 8)|data[0]); 
+		while( !AD7799_Ready(dev))		//1~2
+		{
+			mdelay(1);
+			nTimeout--;
+			if(nTimeout<=0)
+			{
+				nTimeout=10;
+				break;
+			}
+		}
+		ad7799_read_regs(dev, AD7799_REG_DATA, data, 3);//0:通道1 1:通道2
+		dev->rawConversion[channel] = (uint32_t)((data[0] << 16) | (data[1]<< 8)|data[0]); 
 	}
 }
 
