@@ -117,18 +117,18 @@ static int __init beep_init(void)
 
 	/* 设置BEEP所使用的GPIO */
 	/* 1、获取设备节点：beep */
-	beep.nd = of_find_node_by_path("/beep");
+	beep.nd = of_find_node_by_path("/leds");
 	if(beep.nd == NULL) {
-		printk("beep node not find!\r\n");
+		printk("beep node not find!!!!!\r\n");
 		return -EINVAL;
 	} else {
 		printk("beep node find!\r\n");
 	}
 
 	/* 2、 获取设备树中的gpio属性，得到BEEP所使用的BEEP编号 */
-	beep.beep_gpio = of_get_named_gpio(beep.nd, "beep-gpio", 0);
+	beep.beep_gpio = of_get_named_gpio(beep.nd, "pinctrl-0", 0);
 	if(beep.beep_gpio < 0) {
-		printk("can't get beep-gpio");
+		printk("can't get beep-gpio\r\n");
 		return -EINVAL;
 	}
 	printk("led-gpio num = %d\r\n", beep.beep_gpio);

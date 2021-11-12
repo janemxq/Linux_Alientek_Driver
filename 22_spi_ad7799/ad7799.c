@@ -44,6 +44,9 @@ struct ad7799_dev {
 	int major;					/* 主设备号 */
 	void *private_data;			/* 私有数据 		*/
 	int cs_gpio;				/* 片选所使用的GPIO编号		*/
+	int sclk_gpio;				/* 片选所使用的GPIO编号		*/
+	int mosi_gpio;				/* 片选所使用的GPIO编号		*/
+	int miso_gpio;				/* 片选所使用的GPIO编号		*/
 	AD7799_Rate rate; /**< Selected sample rate */
 	AD7799_Mode mode; /**< Selected mode */
 	AD7799_Channel channel; /**< Selected channel */
@@ -56,6 +59,41 @@ struct ad7799_dev {
 
 static struct ad7799_dev ad7799dev;
 static u8 chipNum;
+
+// void SPI_Read2(u8 * buf,u8 size)
+// {
+// 	unsigned	char	i = 0;
+// 	unsigned	char	j = 0;
+// 	unsigned	int  	iTemp = 0;
+// 	unsigned	char  	RotateData = 0;
+
+// 	HAL_GPIO_WritePin(ad7799->SCKPort, ad7799->SCKPin, GPIO_PIN_SET);
+// 	gpio_set_value(dev->cs_gpio, 0);
+// 	__nop();
+// 	HAL_GPIO_WritePin(ad7799->CSPort, ad7799->CSPin, GPIO_PIN_SET);
+// 	__nop();
+// 	HAL_GPIO_WritePin(ad7799->CSPort, ad7799->CSPin, GPIO_PIN_RESET);
+// 	__nop();
+
+// 	for(j=0; j<size; j++)
+// 	{
+// 		for(i=0; i<8; i++)
+// 		{
+// 		    HAL_GPIO_WritePin(ad7799->SCKPort, ad7799->SCKPin, GPIO_PIN_RESET);
+// 			RotateData <<= 1;		//Rotate data
+// 			__nop();
+// 			iTemp = HAL_GPIO_ReadPin(ad7799->DOPort, ad7799->DOPin);
+// 			HAL_GPIO_WritePin(ad7799->SCKPort, ad7799->SCKPin, GPIO_PIN_SET);	
+// 			if(iTemp)
+// 			{
+// 				RotateData |= 1;	
+// 			}
+// 			__nop();
+// 		}
+// 		*(buf + j )= RotateData;
+// 	}	 
+// 	HAL_GPIO_WritePin(ad7799->CSPort, ad7799->CSPin, GPIO_PIN_SET);
+// }
 /*
  * @description	: 从ad7799读取多个寄存器数据
  * @param - dev:  ad7799设备
@@ -84,7 +122,7 @@ static int ad7799_read_regs(struct ad7799_dev *dev, u8 reg, void *buf, int len)
 	ret = spi_sync(spi, &m);	/* 同步发送 */
 
 	/* 第2次，读取数据 */
-	txdata[0] = 0x00;			/* 随便一个值，此处无意义 */
+	txdata[0] = 0xff;			/* 随便一个值，此处无意义 */
 	t->rx_buf = buf;			/* 读取到的数据 */
 	t->len = len;				/* 要读取的数据长度 */
 	spi_message_init(&m);		/* 初始化spi_message */
@@ -238,9 +276,23 @@ static void ad7799_write_onereg(struct ad7799_dev *dev, u8 reg, u8 value)
  * @param ad7799
  */
 void AD7799_Reset(struct ad7799_dev *ad7799) {
+	int ret=-1;
+	struct spi_message m;
 	struct spi_device *spi = (struct spi_device *)ad7799->private_data;
+	struct spi_transfer *t;
+
+	t = kzalloc(sizeof(struct spi_transfer), GFP_KERNEL);	/* 申请内存 */
 	uint8_t dataToSend[4] = { 0xff, 0xff, 0xff, 0xff };
-	spi_write(spi, dataToSend, 4);
+	gpio_set_value(ad7799->cs_gpio, 0);			/* 片选拉低 */
+	t->tx_buf = dataToSend;			/* 要发送的数据 */
+	t->len = 4;					/* 1个字节 */
+	spi_message_init(&m);		/* 初始化spi_message */
+	spi_message_add_tail(t, &m);/* 将spi_transfer添加到spi_message队列 */
+	ret = spi_sync(spi, &m);	/* 同步发送 */
+	// ret=spi_write(spi, dataToSend, 4);
+	printk("reset ret=%d\n",ret);
+     gpio_set_value(ad7799->cs_gpio, 1);			/* 片选拉高 */
+	kfree(t);					/* 释放内存 */
 
 	ad7799->mode = AD7799_MODE_CONT;
 	ad7799->gain = AD7799_GAIN_2;
@@ -304,11 +356,11 @@ void AD7799_SetReference(struct ad7799_dev *ad7799, uint8_t state) {
  * @param ad7799
  * @param channel
  */
-void AD7799_SetChannel(struct ad7799_dev *ad7799, AD7799_Channel channel) {
-	uint32_t command;
+void AD7799_SetChannel(struct ad7799_dev *ad7799, unsigned long channel) {
+	unsigned long command;
 	command=AD7799_GetRegisterValue(ad7799, AD7799_REG_CONF, 2);
 	command &= ~AD7799_CONF_CHAN(0xFF);
-	command |= AD7799_CONF_CHAN((uint32_t ) channel);
+	command |= AD7799_CONF_CHAN(channel);
 	AD7799_SetRegisterValue(ad7799, AD7799_REG_CONF, command, 2);
 	ad7799->channel = channel;
 }
@@ -320,6 +372,7 @@ void AD7799_SetChannel(struct ad7799_dev *ad7799, AD7799_Channel channel) {
 uint8_t AD7799_Ready(struct ad7799_dev *ad7799) {
 	uint8_t rdy = 0;
 	ad7799_read_regs(ad7799, AD7799_REG_STAT, &rdy,1);
+	// printk("rdy =%02X !rdy=%02X\r\n",rdy,!(rdy & 0x80));
 	rdy = (rdy & 0x80);
 	return (!rdy);
 }
@@ -331,27 +384,30 @@ uint8_t AD7799_Ready(struct ad7799_dev *ad7799) {
  */
 void ad7799_readdata(struct ad7799_dev *dev)
 {
-	unsigned char data[14];
-	u8 nTimeout=10;
+	unsigned char data[14]={0};
+	u8 nTimeout=0;
 	u8 ChannelBuf[3]={AD7799_CH_AIN1P_AIN1M,AD7799_CH_AIN2P_AIN2M,AD7799_CH_AIN3P_AIN3M};		//通道1  通道2 通道3
 	u8 channel=0;
 	printk("ad7799_readdata 芯片号:%d\r\n",chipNum);
-	for(channel=0;channel<3;channel++)
+	for(channel=0;channel<2;channel++)
 	{
 		AD7799_SetChannel(dev,ChannelBuf[channel]);//通道设置.		0~1
 		mdelay(10);
 		ad7799_read_regs(dev, AD7799_REG_DATA, data, 3);//清空之前的AD
 		printk("channel=%d \r\n",channel);
+		nTimeout=0;
 		while( !AD7799_Ready(dev))		//1~2
 		{
 			mdelay(1);
-			nTimeout--;
-			if(nTimeout<=0)
-			{
-				nTimeout=10;
-				break;
-			}
+			nTimeout++;
+			// if(nTimeout<=0)
+			// {
+			// 	nTimeout=100;
+			// 	printk("AD7799_Ready 超時:%d\r\n",nTimeout);
+			// 	break;
+			// }
 		}
+		printk("AD7799_Ready 耗时:%d\r\n",nTimeout);
 		ad7799_read_regs(dev, AD7799_REG_DATA, data, 3);//0:通道1 1:通道2
 		dev->rawConversion[channel] = (uint32_t)((data[0] << 16) | (data[1]<< 8)|data[0]); 
 	}
@@ -383,6 +439,7 @@ static ssize_t ad7799_read(struct file *filp, char __user *buf, size_t cnt, loff
 	signed int data[9];
 	long err = 0;
 	printk("ad7799_read \r\n");
+	printk("ad7799dev.gain =%02X\r\n",ad7799dev.gain);
 	struct ad7799_dev *dev = (struct ad7799_dev *)filp->private_data;
 	ad7799_readdata(dev);
 	data[0] = dev->rawConversion[0]>>16;
@@ -449,30 +506,50 @@ static const struct file_operations ad7799_ops = {
 void ad7799_reginit(void)
 {
 	u8 ID=-1;
-	ad7799_read_regs(&ad7799dev,AD7799_REG_ID,&ID, 1);
-	if( (ID& 0x0F) != AD7799_ID)
+	int uiTimeout=10;
+	int uiTimeout2=10;
+	AD7799_Reset(&ad7799dev);
+	mdelay(1);
+	while( (ID& 0x0F) != AD7799_ID)
 	{
-		printk("ad7799 ID no found 111\r\n");
+		uiTimeout--;
+		if(uiTimeout<=0)break;
+		// AD7799_Reset(&ad7799dev);
+		// gpio_set_value(ad7799dev.cs_gpio, 1);
+		// gpio_set_value(ad7799dev.mosi_gpio, 1);
+		// gpio_set_value(ad7799dev.sclk_gpio, 1);
+		// gpio_set_value(ad7799dev.miso_gpio, 1);
+		mdelay(1);
+		// gpio_set_value(ad7799dev.cs_gpio, 0);
+		// gpio_set_value(ad7799dev.mosi_gpio, 0);
+		// gpio_set_value(ad7799dev.sclk_gpio, 0);
+		// gpio_set_value(ad7799dev.miso_gpio, 0);
+		ad7799_read_regs(&ad7799dev,AD7799_REG_ID,&ID, 1);
+		printk("ad7799 ID no found ret=%02X\r\n",ID);
 	}
-	printk("ad7799 ID %02d \r\n", ID);
+	// while( (ID& 0x0F) != AD7799_ID)
+	// {
+	// 	uiTimeout2--;
+	// 	if(uiTimeout2<=0)break;
+	// 	// AD7799_Reset(&ad7799dev);
+	// 	printk("ad7799dev.miso_gpio value=%02X\r\n",gpio_get_value(ad7799dev.miso_gpio));
+	// 	mdelay(1000);
+	// }
+	printk("ad7799 ID %02X \r\n", ID);
 	// u8 value = 0;
 	
-	// ad7799_write_onereg(&ad7799dev, ICM20_PWR_MGMT_1, 0x80);
-	// mdelay(50);
-	// ad7799_write_onereg(&ad7799dev, ICM20_PWR_MGMT_1, 0x01);
-	// mdelay(50);
-
-	// value = ad7799_read_onereg(&ad7799dev, ICM20_WHO_AM_I);
-	// printk("ad7799 ID = %#X\r\n", value);	
-
-	// ad7799_write_onereg(&ad7799dev, ICM20_SMPLRT_DIV, 0x00); 	/* 输出速率是内部采样率					*/
-	// ad7799_write_onereg(&ad7799dev, ICM20_GYRO_CONFIG, 0x18); 	/* 陀螺仪±2000dps量程 				*/
-	// ad7799_write_onereg(&ad7799dev, ICM20_ACCEL_CONFIG, 0x18); 	/* 加速度计±16G量程 					*/
-	// ad7799_write_onereg(&ad7799dev, ICM20_CONFIG, 0x04); 		/* 陀螺仪低通滤波BW=20Hz 				*/
-	// ad7799_write_onereg(&ad7799dev, ICM20_ACCEL_CONFIG2, 0x04); /* 加速度计低通滤波BW=21.2Hz 			*/
-	// ad7799_write_onereg(&ad7799dev, ICM20_PWR_MGMT_2, 0x00); 	/* 打开加速度计和陀螺仪所有轴 				*/
-	// ad7799_write_onereg(&ad7799dev, ICM20_LP_MODE_CFG, 0x00); 	/* 关闭低功耗 						*/
-	// ad7799_write_onereg(&ad7799dev, ICM20_FIFO_EN, 0x00);		/* 关闭FIFO						*/
+	 AD7799_Reset(&ad7799dev);
+	//LED0 = 1;
+	//AD7799_Calibrate();
+   // AD7799_SetBurnoutCurren(0);				//关闭BO
+	AD7799_SetGain(&ad7799dev,ad7799dev.gain);		//128位
+	printk("ad7799dev.gain =%02X\r\n",ad7799dev.gain);
+  AD7799_SetPolarity(&ad7799dev,ad7799dev.polarity);//双极性
+  // AD7799_SetRate2(&ad7799[0],ad7799[0].rate);//采样率 4.7hz
+	//AD7799_SetBurnoutCurren2(0);				//关闭BO
+	//AD7799_SetBufMode2(0);					//由于我们要测的电压低于100mV,所以设置为Unbuffered Mode
+	AD7799_SetMode(&ad7799dev,ad7799dev.mode);		//持续模式
+	AD7799_SetReference(&ad7799dev,1);					//关闭参考检测,因为我们的 AD7799_RefmV 参考电压低于0.5V
 }
 
  /*
@@ -524,16 +601,38 @@ static int ad7799_probe(struct spi_device *spi)
 		printk("can't get cs-gpio");
 		return -EINVAL;
 	}
-
+    //  ad7799dev.sclk_gpio = of_get_named_gpio(ad7799dev.nd, "sclk-gpio", 0);
+	// if(ad7799dev.sclk_gpio < 0) {
+	// 	printk("can't get sclk_gpio");
+	// 	return -EINVAL;
+	// }
+	// ad7799dev.mosi_gpio = of_get_named_gpio(ad7799dev.nd, "mosi-gpio", 0);
+	// if(ad7799dev.mosi_gpio < 0) {
+	// 	printk("can't get mosi_gpio");
+	// 	return -EINVAL;
+	// }ad7799dev.miso_gpio = of_get_named_gpio(ad7799dev.nd, "miso-gpio", 0);
+	// if(ad7799dev.miso_gpio < 0) {
+	// 	printk("can't get miso_gpio");
+	// 	return -EINVAL;
+	// }
 	/* 3、设置GPIO1_IO20为输出，并且输出高电平 */
-	ret = gpio_direction_output(ad7799dev.cs_gpio, 1);
-	if(ret < 0) {
-		printk("can't set gpio!\r\n");
+	gpio_direction_output(ad7799dev.cs_gpio, 1);
+	// ret = gpio_direction_output(ad7799dev.mosi_gpio,1);
+	// gpio_direction_output(ad7799dev.miso_gpio,1);
+	// gpio_direction_output(ad7799dev.sclk_gpio, 1);
+	if(ret != 0) {
+		printk("can't set gpio! ret=%d\n", ret);
 	}
-
+	printk("ad7799dev.cs_gpio =%d\r\n", ad7799dev.cs_gpio);
+	printk("ad7799dev.mosi_gpio =%d\r\n", ad7799dev.mosi_gpio);
+	printk("ad7799dev.miso_gpio =%d\r\n", ad7799dev.miso_gpio);
+	printk("ad7799dev.sclk_gpio =%d\r\n", ad7799dev.sclk_gpio);
+	
 	/*初始化spi_device */
-	spi->mode = SPI_MODE_0;	/*MODE0，CPOL=0，CPHA=0*/
+	spi->mode = SPI_MODE_2;	/*MODE2，CPOL=1，CPHA=0  idle 为高电平 第一个沿读写数据 高变低 */
+	spi->max_speed_hz=5000000;
 	spi_setup(spi);
+	printk("max_speed_hz=%d mode=%d\r\n",spi->max_speed_hz,spi->mode);
 	ad7799dev.private_data = spi; /* 设置私有数据 */
 
 	/* 初始化ad7799内部寄存器 */
@@ -589,7 +688,7 @@ static struct spi_driver ad7799_driver = {
  */
 static int __init ad7799_init(void)
 {
-	printk("add7799_init....");
+	printk("add7799_init....\r\n");
 	return spi_register_driver(&ad7799_driver);
 }
 
@@ -600,7 +699,7 @@ static int __init ad7799_init(void)
  */
 static void __exit ad7799_exit(void)
 {
-	printk("ad7799_exit....");
+	printk("ad7799_exit....\r\n");
 	spi_unregister_driver(&ad7799_driver);
 }
 

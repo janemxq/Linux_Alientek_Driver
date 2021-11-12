@@ -254,7 +254,7 @@ void icm20608_reginit(void)
 	mdelay(50);
 
 	value = icm20608_read_onereg(&icm20608dev, ICM20_WHO_AM_I);
-	printk("ICM20608 ID = %#X\r\n", value);	
+	printk("ICM20608 ID = %#X------------------\r\n", value);	
 
 	icm20608_write_onereg(&icm20608dev, ICM20_SMPLRT_DIV, 0x00); 	/* 输出速率是内部采样率					*/
 	icm20608_write_onereg(&icm20608dev, ICM20_GYRO_CONFIG, 0x18); 	/* 陀螺仪±2000dps量程 				*/
@@ -324,9 +324,10 @@ static int icm20608_probe(struct spi_device *spi)
 
 	/*初始化spi_device */
 	spi->mode = SPI_MODE_0;	/*MODE0，CPOL=0，CPHA=0*/
+	spi->max_speed_hz=1000000;
 	spi_setup(spi);
 	icm20608dev.private_data = spi; /* 设置私有数据 */
-
+    printk("spi->max_speed_hz=%d\r\n",spi->max_speed_hz);
 	/* 初始化ICM20608内部寄存器 */
 	icm20608_reginit();		
 	return 0;

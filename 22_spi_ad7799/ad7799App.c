@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
 	while (1) {
 		
 		
-		for(chip=0;chip<3;chip++)
+		for(chip=0;chip<1;chip++)
 		{
 			//先把访问的芯片号告诉驱动
 			ret = write(fd, &chip, 1);
