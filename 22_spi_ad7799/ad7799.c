@@ -294,11 +294,7 @@ void AD7799_Reset(struct ad7799_dev *ad7799) {
      gpio_set_value(ad7799->cs_gpio, 1);			/* 片选拉高 */
 	kfree(t);					/* 释放内存 */
 
-	ad7799->mode = AD7799_MODE_CONT;
-	ad7799->gain = AD7799_GAIN_2;
-	ad7799->channel = AD7799_CH_AIN1P_AIN1M;
-	ad7799->polarity = AD7799_BIPOLAR;
-	ad7799->rate = AD7799_RATE_4_17HZ_74DB;
+	
 }
 /**
  * Set PGA Gain
@@ -340,6 +336,19 @@ void AD7799_SetMode(struct ad7799_dev *ad7799, AD7799_Mode mode) {
 	ad7799->mode = mode;
 }
 /**
+ * Set the sample rate
+ * @param ad7799
+ * @param rate
+ */
+void AD7799_SetRate(struct ad7799_dev *ad7799, AD7799_Rate rate) {
+	uint32_t command;
+	command = AD7799_GetRegisterValue(ad7799, AD7799_REG_MODE, 2);
+	command &= ~AD7799_MODE_RATE(0xFF);
+	command |= AD7799_MODE_RATE((uint32_t ) rate);
+	AD7799_SetRegisterValue(ad7799, AD7799_REG_MODE, command, 2);
+	ad7799->rate = rate;
+}
+/**
  * Set reference detection
  * @param ad7799
  * @param state
@@ -378,7 +387,7 @@ uint8_t AD7799_Ready(struct ad7799_dev *ad7799) {
 }
 /*
  * @description	: 读取ad7799的数据，三个通道一起都上来
- * 				:
+ * 				:  第二路就是接在接线端子第一路信号上的，空称显示0x1000080
  * @param - dev	: ad7799设备
  * @return 		: 无。
  */
@@ -394,7 +403,7 @@ void ad7799_readdata(struct ad7799_dev *dev)
 		AD7799_SetChannel(dev,ChannelBuf[channel]);//通道设置.		0~1
 		mdelay(10);
 		ad7799_read_regs(dev, AD7799_REG_DATA, data, 3);//清空之前的AD
-		printk("channel=%d \r\n",channel);
+		
 		nTimeout=0;
 		while( !AD7799_Ready(dev))		//1~2
 		{
@@ -407,9 +416,11 @@ void ad7799_readdata(struct ad7799_dev *dev)
 			// 	break;
 			// }
 		}
-		printk("AD7799_Ready 耗时:%d\r\n",nTimeout);
+		// printk("AD7799_Ready 耗时:%d\r\n",nTimeout);
+		// printk("AD7799_Ready 超時:%d\r\n",nTimeout);
 		ad7799_read_regs(dev, AD7799_REG_DATA, data, 3);//0:通道1 1:通道2
-		dev->rawConversion[channel] = (uint32_t)((data[0] << 16) | (data[1]<< 8)|data[0]); 
+		printk("channel=%d data: %02X %02X %02X\r\n",channel,data[0],data[1],data[2]);
+		dev->rawConversion[channel] = (uint32_t)((data[0] << 16) | (data[1]<< 8)|data[2]); 
 	}
 }
 
@@ -436,7 +447,7 @@ static int ad7799_open(struct inode *inode, struct file *filp)
  */
 static ssize_t ad7799_read(struct file *filp, char __user *buf, size_t cnt, loff_t *off)
 {
-	signed int data[9];
+	signed char data[9];
 	long err = 0;
 	printk("ad7799_read \r\n");
 	printk("ad7799dev.gain =%02X\r\n",ad7799dev.gain);
@@ -445,10 +456,10 @@ static ssize_t ad7799_read(struct file *filp, char __user *buf, size_t cnt, loff
 	data[0] = dev->rawConversion[0]>>16;
 	data[1] = dev->rawConversion[0]>>8;
 	data[2] = (dev->rawConversion[0]&0xff);
-	data[3] = dev->rawConversion[1]>>16;;
+	data[3] = dev->rawConversion[1]>>16;
 	data[4] = dev->rawConversion[1]>>8;
 	data[5] = (dev->rawConversion[1]&0xff);
-	data[6] = dev->rawConversion[2]>>16;;
+	data[6] = dev->rawConversion[2]>>16;
 	data[7] = dev->rawConversion[2]>>8;
 	data[8] = (dev->rawConversion[2]&0xff);
 	err = copy_to_user(buf, data, sizeof(data));
@@ -539,16 +550,21 @@ void ad7799_reginit(void)
 	// u8 value = 0;
 	
 	 AD7799_Reset(&ad7799dev);
+	// ad7799dev.mode = AD7799_MODE_CONT;
+	// ad7799dev.gain = AD7799_GAIN_128;
+	// ad7799dev.channel = AD7799_CH_AIN1P_AIN1M;
+	// ad7799dev.polarity = AD7799_BIPOLAR;
+	// ad7799dev.rate = AD7799_RATE_4_17HZ_74DB;
 	//LED0 = 1;
 	//AD7799_Calibrate();
    // AD7799_SetBurnoutCurren(0);				//关闭BO
-	AD7799_SetGain(&ad7799dev,ad7799dev.gain);		//128位
-	printk("ad7799dev.gain =%02X\r\n",ad7799dev.gain);
-  AD7799_SetPolarity(&ad7799dev,ad7799dev.polarity);//双极性
-  // AD7799_SetRate2(&ad7799[0],ad7799[0].rate);//采样率 4.7hz
+	AD7799_SetGain(&ad7799dev,AD7799_GAIN_128);		//128位
+	printk("ad7799dev.gain =%d\r\n",1<<ad7799dev.gain);
+    AD7799_SetPolarity(&ad7799dev,AD7799_BIPOLAR);//双极性
+     AD7799_SetRate(&ad7799dev,AD7799_RATE_4_17HZ_74DB);//采样率 4.7hz
 	//AD7799_SetBurnoutCurren2(0);				//关闭BO
 	//AD7799_SetBufMode2(0);					//由于我们要测的电压低于100mV,所以设置为Unbuffered Mode
-	AD7799_SetMode(&ad7799dev,ad7799dev.mode);		//持续模式
+	AD7799_SetMode(&ad7799dev,AD7799_MODE_CONT);		//持续模式
 	AD7799_SetReference(&ad7799dev,1);					//关闭参考检测,因为我们的 AD7799_RefmV 参考电压低于0.5V
 }
 
