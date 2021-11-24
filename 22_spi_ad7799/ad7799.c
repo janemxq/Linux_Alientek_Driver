@@ -310,6 +310,34 @@ void AD7799_SetGain(struct ad7799_dev *ad7799, AD7799_Gain gain) {
 	ad7799->gain = gain;
 }
 /**
+ *  AD7799_SetConfig
+ * @param ad7799
+ * @param value
+ */
+void AD7799_SetConfig(struct ad7799_dev *ad7799,u16 value) {
+	AD7799_SetRegisterValue(ad7799, AD7799_REG_CONF,value,2);
+}
+/**
+ * Get PGA Gain
+ * @param ad7799
+ * @param gain
+ */
+int AD7799_GetConfig(struct ad7799_dev *ad7799) {
+	uint32_t command;
+	command=AD7799_GetRegisterValue(ad7799, AD7799_REG_CONF,2);
+	return command;
+}
+/**
+ * Get PGA Gain
+ * @param ad7799
+ * @param gain
+ */
+int AD7799_GetMode(struct ad7799_dev *ad7799) {
+	uint32_t command;
+	command=AD7799_GetRegisterValue(ad7799, AD7799_REG_MODE,2);
+	return command;
+}
+/**
  * Set unipolar or bipolar conversion
  * @param ad7799
  * @param polarity
@@ -407,7 +435,7 @@ void ad7799_readdata(struct ad7799_dev *dev)
 		nTimeout=0;
 		while( !AD7799_Ready(dev))		//1~2
 		{
-			mdelay(1);
+			// mdelay(1);
 			nTimeout++;
 			// if(nTimeout<=0)
 			// {
@@ -447,11 +475,13 @@ static int ad7799_open(struct inode *inode, struct file *filp)
  */
 static ssize_t ad7799_read(struct file *filp, char __user *buf, size_t cnt, loff_t *off)
 {
-	signed char data[9];
+	signed char data[10];
+	int iTemp=0;
 	long err = 0;
 	printk("ad7799_read \r\n");
-	printk("ad7799dev.gain =%02X\r\n",ad7799dev.gain);
+	printk("ad7799 gain =%02X mode =%02X rate =%02X polarity =%02X\r\n",ad7799dev.gain,ad7799dev.mode,ad7799dev.rate,ad7799dev.polarity);
 	struct ad7799_dev *dev = (struct ad7799_dev *)filp->private_data;
+	
 	ad7799_readdata(dev);
 	data[0] = dev->rawConversion[0]>>16;
 	data[1] = dev->rawConversion[0]>>8;
@@ -459,9 +489,18 @@ static ssize_t ad7799_read(struct file *filp, char __user *buf, size_t cnt, loff
 	data[3] = dev->rawConversion[1]>>16;
 	data[4] = dev->rawConversion[1]>>8;
 	data[5] = (dev->rawConversion[1]&0xff);
-	data[6] = dev->rawConversion[2]>>16;
-	data[7] = dev->rawConversion[2]>>8;
-	data[8] = (dev->rawConversion[2]&0xff);
+	udelay(1);
+
+	iTemp=AD7799_GetConfig(dev);
+	if(iTemp != 0x0731)
+	{
+		AD7799_SetConfig(dev,0x0731);
+	}
+	data[6]=iTemp&0xFF;
+	data[7]=iTemp>>8&0xFF;
+	iTemp=AD7799_GetMode(dev);
+	data[8] = iTemp&0xFF;
+	data[9] = iTemp>>8&0xFF;
 	err = copy_to_user(buf, data, sizeof(data));
 	return 0;
 }
@@ -561,7 +600,7 @@ void ad7799_reginit(void)
 	AD7799_SetGain(&ad7799dev,AD7799_GAIN_128);		//128位
 	printk("ad7799dev.gain =%d\r\n",1<<ad7799dev.gain);
     AD7799_SetPolarity(&ad7799dev,AD7799_BIPOLAR);//双极性
-     AD7799_SetRate(&ad7799dev,AD7799_RATE_4_17HZ_74DB);//采样率 4.7hz
+     AD7799_SetRate(&ad7799dev,AD7799_RATE_10HZ_69DB);//采样率 4.7hz
 	//AD7799_SetBurnoutCurren2(0);				//关闭BO
 	//AD7799_SetBufMode2(0);					//由于我们要测的电压低于100mV,所以设置为Unbuffered Mode
 	AD7799_SetMode(&ad7799dev,AD7799_MODE_CONT);		//持续模式
@@ -578,7 +617,7 @@ void ad7799_reginit(void)
 static int ad7799_probe(struct spi_device *spi)
 {
 	int ret = 0;
-
+printk("ad7799_probe!\r\n");
 	/* 1、构建设备号 */
 	if (ad7799dev.major) {
 		ad7799dev.devid = MKDEV(ad7799dev.major, 0);
@@ -646,7 +685,7 @@ static int ad7799_probe(struct spi_device *spi)
 	
 	/*初始化spi_device */
 	spi->mode = SPI_MODE_2;	/*MODE2，CPOL=1，CPHA=0  idle 为高电平 第一个沿读写数据 高变低 */
-	spi->max_speed_hz=5000000;
+	spi->max_speed_hz=2000000;
 	spi_setup(spi);
 	printk("max_speed_hz=%d mode=%d\r\n",spi->max_speed_hz,spi->mode);
 	ad7799dev.private_data = spi; /* 设置私有数据 */

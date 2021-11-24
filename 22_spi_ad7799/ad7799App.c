@@ -92,20 +92,20 @@ double analyzeAD7799_g(long data)
 {
 	 #ifdef IS_128
     long zeroValue=0x3250;
-    long adjustValue=0X0652df; 
+    long fullValue=0X0652df; 
   #else
      long zeroValue=0xbf;
     long adjustValue=0X00192e;
   #endif
 	long value = (data - 0X800000)-zeroValue;
-	return (float)((float)value*(float)1000)/(adjustValue-zeroValue);//0X00192e:1000g的AD值    0xbf:0g的AD值 AD7799_GAIN_2
+	return (float)((float)value*(float)1000)/(fullValue-zeroValue);//0X00192e:1000g的AD值    0xbf:0g的AD值 AD7799_GAIN_2
 }
 
 int main(int argc, char *argv[])
 {
 	int fd,fd_rec;
 	char *filename;
-	unsigned char databuf[9];//必须和驱动里面read函数的类型保持一致，不然会卡死!!!!
+	unsigned char databuf[10];//必须和驱动里面read函数的类型保持一致，不然会卡死!!!!
 	unsigned char recbuf[256];
 	 struct tm *t;
     time_t tt;
@@ -128,10 +128,10 @@ int main(int argc, char *argv[])
 	}
 
 	filename = argv[1];
-	fd_rec=open("/home/scale_rec.txt",O_CREAT|O_RDWR);
+	fd_rec=open("/run/media/mmcblk0p2/scale_rec.txt",O_CREAT|O_RDWR);
 	if(fd_rec<0)
 	{
-		printf("can't open file %s\r\n", "/home/scale_rec.txt");
+		printf("can't open file %s\r\n", "/run/media/mmcblk0p2/scale_rec.txt");
 		return -1;
 	}
 	fd = open(filename, O_RDWR);
@@ -157,13 +157,14 @@ int main(int argc, char *argv[])
 				}
 				time(&tt);
                 t = localtime(&tt);		
-				sprintf(recbuf,"[%4d年%02d月%02d日 %02d:%02d:%02d] 通道1 = %06X  %0.2f 克, 通道2 = %06X  %0.2f 克\r\n",  
+				sprintf(recbuf,"[%4d年%02d月%02d日 %02d:%02d:%02d] 通道1 = %06X  %0.2f 克, 通道2 = %06X  %0.2f 克 config=%04X mode=%04X\r\n",  
 				 t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec,
-				 lADValue[0], ADValues[0] , lADValue[0], ADValues[1]);
+				 lADValue[0], ADValues[0] , lADValue[1], ADValues[1],(databuf[7]<<8)+databuf[6],(databuf[9]<<8)+databuf[8]);
 				printf(recbuf);
-				write(fd_rec, recbuf, sizeof recbuf);
+				write(fd_rec, recbuf, strlen(recbuf));
 				// printf("通道1 = %06d 克, 通道2= %06d 克\r\n", ADValues[0], ADValues[1]);
-				sleep(1); /*1s */
+				// usleep(100000); /*100ms */
+				sleep(1);/*1s*/
 		    }
 		}
 	}
