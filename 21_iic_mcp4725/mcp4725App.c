@@ -33,13 +33,13 @@ int main(int argc, char *argv[])
 {
 	int fd;
 	char *filename;
-	unsigned short databuf[2];
+	unsigned char databuf[2];
 	unsigned char ir, als, ps;
 	int ret = 0;
 	
 
-	if (argc != 2) {
-		printf("Error Usage!\r\n");
+	if (argc != 3) {
+		printf("Error Usage! 需要输入电压值，0-4096 对应 0-3.3v \r\n");
 		return -1;
 	}
 
@@ -51,13 +51,13 @@ int main(int argc, char *argv[])
 	}else{
 		printf("open file %s successs!!!\r\n", filename);
 	}
-    // databuf[0] = atoi(argv[2]);	/* 要执行的操作：打开或关闭 */
-	databuf[0]=0x4096;
+    databuf[0] = atoi(argv[2])>>8;	/* 输入电压值，0-4095 对应 0-3.3v*/
+    databuf[1] = atoi(argv[2])&0xFF;	/* 输入电压值，0-4095 对应 0-3.3v*/
 	while (1) {
-		ret = read(fd, &databuf[0], 1);
+		ret = write(fd, databuf, 2);
 		// if(ret == 0) { 			/* 数据读取成功 */
 			// write(fd,&databuf[0],1);//把A狀態寫到B
-			printf("MCP4725 返回值=%04X\r\n",ret);
+			// printf("MCP4725 返回值=%04X\r\n",ret);
 		// }
 		sleep(2); /*延时 2000ms */
 	}
