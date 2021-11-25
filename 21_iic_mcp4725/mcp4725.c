@@ -54,14 +54,14 @@ static int mcp4725_read_regs(struct mcp4725_dev *dev, MCP4725_READ_TYPE dataType
 	int ret;
 	uint16_t value = dataType;                             //convert enum to integer to avoid compiler warnings                                    
 	uint8_t buffer[dataType];
-	// struct i2c_msg msg[2];
+	struct i2c_msg msg[2];
 	struct i2c_client *client = (struct i2c_client *)dev->private_data;
     // printk("mcp4725_read_regs addr =%d \n",client->addr);
 	/* msg[0]为发送要读取的首地址 */
-	// msg[0].addr = client->addr;			/* mcp4725地址 */
-	// msg[0].flags = 0;					/* 标记为发送数据 */
-	// msg[0].buf = &reg;					/* 读取的首地址 */
-	// msg[0].len = 5;						/* reg长度*/
+	msg[0].addr = client->addr;			/* mcp4725地址 */
+	msg[0].flags = 0;					/* 标记为发送数据 */
+	msg[0].buf =buffer;					/* 读取的首地址 */
+	msg[0].len = dataType;						/* reg长度*/
 
 	/* msg[1]读取数据 */
 	// msg[1].addr = client->addr;			/* mcp4725地址 */
@@ -69,7 +69,7 @@ static int mcp4725_read_regs(struct mcp4725_dev *dev, MCP4725_READ_TYPE dataType
 	// msg[1].buf = val;					/* 读取数据缓冲区 */
 	// msg[1].len = 5;					   /* 要读取的数据长度,按最长的读*/
 
-	// ret = i2c_transfer(client->adapter, msg, 2);
+	// ret = i2c_transfer(client->adapter, msg, 1);
 	ret=i2c_master_recv(client,buffer,dataType);
 	if (ret < 0)
 		return ret;
@@ -91,6 +91,7 @@ static int mcp4725_read_regs(struct mcp4725_dev *dev, MCP4725_READ_TYPE dataType
 		ret = (ret << 8) | buffer[value-1];
 		break;
 	}
+	printk("mcp4725_read_regs ret =%x \n",ret);
 	return ret;
 }
 /**************************************************************************/
@@ -109,8 +110,12 @@ uint8_t MCP4725_getEepromBusyFlag(struct mcp4725_dev *dev)
 {
   uint16_t value = mcp4725_read_regs(dev, MCP4725_READ_SETTINGS); //BSY,POR,xx,xx,xx,PD1,PD0,xx
 
-  if (value != MCP4725_ERROR) return (value & 0x80)==0x80;		//1 - completed, 0 - incompleted
-                              return 0;										//collision on i2c bus
+  if (value != MCP4725_ERROR) 
+  {
+	printk("MCP4725_getEepromBusyFlag value=%x \r\n",value);
+    return (value & 0x80)==0x80;		//1 - completed, 0 - incompleted
+  }
+  return 0;										//collision on i2c bus
 }
 /*
  * @description	: 向mcp4725多个寄存器写入数据
@@ -126,7 +131,7 @@ static s32 mcp4725_write_regs(struct mcp4725_dev *dev, uint16_t value, MCP4725_C
 	int ret;
 	struct i2c_msg msg;
 	struct i2c_client *client = (struct i2c_client *)dev->private_data;
-	// printk("mcp4725_write_regs addr =%d \n",client->addr);
+	printk("mcp4725_write_regs addr =%x \n",client->addr);
 	
 	// b[0] = reg;					/* 寄存器首地址 */
 	// memcpy(&b[1],buf,len);		/* 将要写入的数据拷贝到数组b里面 */
@@ -164,14 +169,16 @@ static s32 mcp4725_write_regs(struct mcp4725_dev *dev, uint16_t value, MCP4725_C
 			ret=i2c_transfer(client->adapter, &msg, 1);
 			break;
 	}
+	printk("client->addr=%02x，b[0]=%02x b[1]=%02x ret =%04X\r\n",client->addr,b[0],b[1],ret);
 	if(ret <=0 )return 0;
 	if (mode == MCP4725_EEPROM_MODE)
 	{
-		if (MCP4725_getEepromBusyFlag(_MCP4725) == 1) return 1;                      //write completed, success!!!
-										msleep(MCP4725_EEPROM_WRITE_TIME); //typical EEPROM write time 25 msec
-		if (MCP4725_getEepromBusyFlag(_MCP4725) == 1) return 1;                      //write completed, success!!!
-										msleep(MCP4725_EEPROM_WRITE_TIME); //maximum EEPROM write time 25 + 25 = 50 msec
+		if (MCP4725_getEepromBusyFlag(dev) == 1) return 1;                      //write completed, success!!!
+			msleep(MCP4725_EEPROM_WRITE_TIME); //typical EEPROM write time 25 msec
+		if (MCP4725_getEepromBusyFlag(dev) == 1) return 1;                      //write completed, success!!!
+			msleep(MCP4725_EEPROM_WRITE_TIME); //maximum EEPROM write time 25 + 25 = 50 msec
 	}
+	printk("ret2 =%04X\r\n", ret);
 	return ret;
 }
 
@@ -181,17 +188,17 @@ static s32 mcp4725_write_regs(struct mcp4725_dev *dev, uint16_t value, MCP4725_C
  * @param - reg:  要读取的寄存器
  * @return 	  :   读取到的寄存器值
  */
-static unsigned char mcp4725_read_reg(struct mcp4725_dev *dev, u8 reg)
-{
-	u8 data = 0;
-	mcp4725_read_regs(dev, reg, &data, 1);
-	return data;
+// static unsigned char mcp4725_read_reg(struct mcp4725_dev *dev,  MCP4725_READ_TYPE dataType)
+// {
+// 	u8 data = 0;
+// 	mcp4725_read_regs(dev, dataType);
+// 	return data;
 
-#if 0
-	struct i2c_client *client = (struct i2c_client *)dev->private_data;
-	return i2c_smbus_read_byte_data(client, reg);
-#endif
-}
+// #if 0
+// 	struct i2c_client *client = (struct i2c_client *)dev->private_data;
+// 	return i2c_smbus_read_byte_data(client, reg);
+// #endif
+// }
 
 /*
  * @description	: 向mcp4725指定寄存器写入指定的值，写一个寄存器
@@ -200,12 +207,10 @@ static unsigned char mcp4725_read_reg(struct mcp4725_dev *dev, u8 reg)
  * @param - data: 要写入的值
  * @return   :    无
  */
-static void mcp4725_write_reg(struct mcp4725_dev *dev, u8 reg, u8 data)
-{
-	u8 buf = 0;
-	buf = data;
-	mcp4725_write_regs(dev, reg, &buf, 1);
-}
+// static void mcp4725_write_reg(struct mcp4725_dev *dev, uint16_t value, MCP4725_COMMAND_TYPE mode, MCP4725_POWER_DOWN_TYPE powerType)
+// {
+// 	mcp4725_write_regs(dev, value, mode, powerType);
+// }
 //--------------------------------------------------------------------------------------   
 //  函数名称：bit MCP4725_INIT(unsigned char deviceAddr,unsigned char ab,unsigned char hwa,unsigned char o)
 //  函数功能：初始化指定地址的MCP4725器件
@@ -214,37 +219,37 @@ static void mcp4725_write_reg(struct mcp4725_dev *dev, u8 reg, u8 data)
 //		  hwa——配置A0、A1、A2硬件地址是否使能，取值HWA_EN、HWA_DIS	
 //		  o——配置INTA、INTB的输出类型，取值INT_OD、INT_PUSHPULL_HIGH、INT_PUSHPULL_LOW 
 //--------------------------------------------------------------------------------------   
-static unsigned char MCP4725_INIT(struct mcp4725_dev *dev,unsigned char intab,unsigned char hwa,unsigned char o)
-{
-	unsigned char state;
-	unsigned char res;
+// static unsigned char MCP4725_INIT(struct mcp4725_dev *dev,unsigned char intab,unsigned char hwa,unsigned char o)
+// {
+// 	unsigned char state;
+// 	unsigned char res;
 	
-	//首先设置其他位的默认状态
-	state = 0x2E;		//001011 10,BANK = 0,默认不关联AB（bit = 0）,禁用顺序操作,使能变化率控制、使能硬件地址,开漏输出
-	if(intab==INTA_INTB_CONJUNCTION)
-	{
-		state |= 0x40;
-	}
-	if(hwa==HWA_DIS)
-	{
-		state &= (~0x08);
-	}
-	if(o==INT_PUSHPULL_HIGH)
-	{
-		state &= (~0x04);
-		state |= 0x02;
-	}
-	if(o==INT_PUSHPULL_LOW)
-	{
-		state &= (~0x04);
-		state &= (~0x02);
-	}
+// 	// //首先设置其他位的默认状态
+// 	// state = 0x2E;		//001011 10,BANK = 0,默认不关联AB（bit = 0）,禁用顺序操作,使能变化率控制、使能硬件地址,开漏输出
+// 	// if(intab==INTA_INTB_CONJUNCTION)
+// 	// {
+// 	// 	state |= 0x40;
+// 	// }
+// 	// if(hwa==HWA_DIS)
+// 	// {
+// 	// 	state &= (~0x08);
+// 	// }
+// 	// if(o==INT_PUSHPULL_HIGH)
+// 	// {
+// 	// 	state &= (~0x04);
+// 	// 	state |= 0x02;
+// 	// }
+// 	// if(o==INT_PUSHPULL_LOW)
+// 	// {
+// 	// 	state &= (~0x04);
+// 	// 	state &= (~0x02);
+// 	// }
 	
-	//写回方向寄存器
-	mcp4725_write_reg(dev,MCP4725_IOCON,state);
+// 	//写回方向寄存器
+// 	// mcp4725_write_reg(dev,MCP4725_IOCON,state);
 	
-	return 0;
-}
+// 	return 0;
+// }
 /*
  * @description	: 读取mcp4725的数据，读取原始数据，包括ALS,PS和IR, 注意！
  *				: 如果同时打开ALS,IR+PS的话两次数据读取的时间间隔要大于112.5ms
@@ -285,17 +290,11 @@ static int mcp4725_open(struct inode *inode, struct file *filp)
  */
 static ssize_t mcp4725_read(struct file *filp, char __user *buf, size_t cnt, loff_t *off)
 {
-	u8 data[2];
-	long err = 0;
-
+	// u8 data[2];
+	// long err = 0;
 	struct mcp4725_dev *dev = (struct mcp4725_dev *)filp->private_data;
-	
-	data[0] = MCP4725_READ_GPIO(dev,MCP4725_PORTA);
-	data[1] = MCP4725_READ_GPIO(dev,MCP4725_PORTB);
-	// mcp4725_readdata(dev);
-	err = copy_to_user(buf, data, sizeof(data));
-	printk("mcp4725_read buf[0]=%x  buf[1]=%x \r\n",buf[0],buf[1]);
-	return 0;
+	 mcp4725_write_regs(dev,0xfff, MCP4725_FAST_MODE, MCP4725_POWER_DOWN_OFF);
+	return mcp4725_read_regs(dev,MCP4725_READ_DAC_REG);
 }
 /*
  * @description		: 往设备写入数据 
@@ -308,17 +307,17 @@ static ssize_t mcp4725_read(struct file *filp, char __user *buf, size_t cnt, lof
 static ssize_t mcp4725_write(struct file *filp, char __user *buf, size_t cnt, loff_t *off)
 {
 	int retvalue;
-	u8 data[10];
+	u16 data[10];
     retvalue= copy_from_user(data, buf, cnt);
 	struct mcp4725_dev *dev = (struct mcp4725_dev *)filp->private_data;
 
-	 	if(retvalue < 0) {
+	 if(retvalue < 0) 
+	{
 		printk("kernel write failed!\r\n");
 		return -EFAULT;
 	}
 	printk("mcp4725_write data[0]=%x \r\n",data[0]);
-	MCP4725_WRITE_GPIO(dev,MCP4725_PORTB,data[0]);
-	return 0;
+    return mcp4725_write_regs(dev, data[0], MCP4725_FAST_MODE, MCP4725_POWER_DOWN_OFF);
 }
 /*
  * @description		: 关闭/释放设备

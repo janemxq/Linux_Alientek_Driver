@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 {
 	int fd;
 	char *filename;
-	unsigned char databuf[2];
+	unsigned short databuf[2];
 	unsigned char ir, als, ps;
 	int ret = 0;
 	
@@ -52,13 +52,14 @@ int main(int argc, char *argv[])
 		printf("open file %s successs!!!\r\n", filename);
 	}
     // databuf[0] = atoi(argv[2]);	/* 要执行的操作：打开或关闭 */
+	databuf[0]=0x4096;
 	while (1) {
-		ret = read(fd, databuf, sizeof(databuf));
-		if(ret == 0) { 			/* 数据读取成功 */
-			write(fd,&databuf[0],1);//把A狀態寫到B
-			printf("IOA = %x IOB = %x\r\n",  databuf[0], databuf[1]);
-		}
-		usleep(2000000); /*延时 1000ms */
+		ret = read(fd, &databuf[0], 1);
+		// if(ret == 0) { 			/* 数据读取成功 */
+			// write(fd,&databuf[0],1);//把A狀態寫到B
+			printf("MCP4725 返回值=%04X\r\n",ret);
+		// }
+		sleep(2); /*延时 2000ms */
 	}
 	close(fd);	/* 关闭文件 */	
 	return 0;

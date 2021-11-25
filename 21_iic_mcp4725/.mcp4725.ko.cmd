@@ -1,0 +1,1 @@
+cmd_/home/alientek/2、Linux驱动例程/21_iic_mcp4725/mcp4725.ko := arm-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/alientek/2、Linux驱动例程/21_iic_mcp4725/mcp4725.ko /home/alientek/2、Linux驱动例程/21_iic_mcp4725/mcp4725.o /home/alientek/2、Linux驱动例程/21_iic_mcp4725/mcp4725.mod.o
