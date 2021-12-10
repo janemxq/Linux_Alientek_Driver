@@ -1,0 +1,1 @@
+cmd_/home/alientek/2、Linux驱动例程/11_key/key.ko := arm-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/alientek/2、Linux驱动例程/11_key/key.ko /home/alientek/2、Linux驱动例程/11_key/key.o /home/alientek/2、Linux驱动例程/11_key/key.mod.o

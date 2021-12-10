@@ -4,7 +4,7 @@ KERNELDIR := /home/alientek/alpha/alientek-zzk/kernel-zzk/linux-imx-rel_imx_4.1.
 # KERNELDIR := /home/alientek/alpha/alientek-alpha/kernel-alientek
 CURRENT_PATH := $(shell pwd)
 # 不编译到内核，动态加载
-obj-m := ad7799.o
+obj-m := ads1118.o
 
 build: kernel_modules
 

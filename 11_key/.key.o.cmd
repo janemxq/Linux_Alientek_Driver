@@ -1,8 +1,31 @@
-cmd_/home/alientek/2、Linux驱动例程/22_spi_ad7799/ad7799.o := arm-linux-gnueabihf-gcc -Wp,-MD,/home/alientek/2、Linux驱动例程/22_spi_ad7799/.ad7799.o.d  -nostdinc -isystem /usr/local/arm/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/4.9.4/include -I./arch/arm/include -Iarch/arm/include/generated/uapi -Iarch/arm/include/generated  -Iinclude -I./arch/arm/include/uapi -Iarch/arm/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-dwarf2-cfi-asm -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=6 -march=armv6k -mtune=arm1136j-s -msoft-float -Uarm -fno-delete-null-pointer-checks -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -fomit-frame-pointer -fno-var-tracking-assignments -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO  -DMODULE  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(ad7799)"  -D"KBUILD_MODNAME=KBUILD_STR(ad7799)" -c -o /home/alientek/2、Linux驱动例程/22_spi_ad7799/.tmp_ad7799.o /home/alientek/2、Linux驱动例程/22_spi_ad7799/ad7799.c
+cmd_/home/alientek/2、Linux驱动例程/11_key/key.o := arm-linux-gnueabihf-gcc -Wp,-MD,/home/alientek/2、Linux驱动例程/11_key/.key.o.d  -nostdinc -isystem /usr/local/arm/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/4.9.4/include -I./arch/arm/include -Iarch/arm/include/generated/uapi -Iarch/arm/include/generated  -Iinclude -I./arch/arm/include/uapi -Iarch/arm/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-dwarf2-cfi-asm -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=6 -march=armv6k -mtune=arm1136j-s -msoft-float -Uarm -fno-delete-null-pointer-checks -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -fomit-frame-pointer -fno-var-tracking-assignments -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO  -DMODULE  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(key)"  -D"KBUILD_MODNAME=KBUILD_STR(key)" -c -o /home/alientek/2、Linux驱动例程/11_key/.tmp_key.o /home/alientek/2、Linux驱动例程/11_key/key.c
 
-source_/home/alientek/2、Linux驱动例程/22_spi_ad7799/ad7799.o := /home/alientek/2、Linux驱动例程/22_spi_ad7799/ad7799.c
+source_/home/alientek/2、Linux驱动例程/11_key/key.o := /home/alientek/2、Linux驱动例程/11_key/key.c
 
-deps_/home/alientek/2、Linux驱动例程/22_spi_ad7799/ad7799.o := \
+deps_/home/alientek/2、Linux驱动例程/11_key/key.o := \
+    $(wildcard include/config/ss/start/off.h) \
+    $(wildcard include/config/mode/contin.h) \
+    $(wildcard include/config/dr/128sps.h) \
+    $(wildcard include/config/ts/mode/adc.h) \
+    $(wildcard include/config/pull/up/off.h) \
+    $(wildcard include/config/nop/valid.h) \
+    $(wildcard include/config/resv.h) \
+    $(wildcard include/config/ts/mode/temp.h) \
+    $(wildcard include/config/mux/diff/0/1.h) \
+    $(wildcard include/config/mux/diff/0/3.h) \
+    $(wildcard include/config/mux/diff/1/3.h) \
+    $(wildcard include/config/mux/diff/2/3.h) \
+    $(wildcard include/config/mux/single/0.h) \
+    $(wildcard include/config/mux/single/1.h) \
+    $(wildcard include/config/mux/single/2.h) \
+    $(wildcard include/config/mux/single/3.h) \
+    $(wildcard include/config/pga/6/144v.h) \
+    $(wildcard include/config/pga/4/096v.h) \
+    $(wildcard include/config/pga/2/048v.h) \
+    $(wildcard include/config/pga/1/024v.h) \
+    $(wildcard include/config/pga/0/512v.h) \
+    $(wildcard include/config/pga/0/256v.h) \
+    $(wildcard include/config/pull/up/on.h) \
   include/linux/types.h \
     $(wildcard include/config/uid16.h) \
     $(wildcard include/config/lbdaf.h) \
@@ -135,6 +158,29 @@ deps_/home/alientek/2、Linux驱动例程/22_spi_ad7799/ad7799.o := \
   include/asm-generic/bug.h \
     $(wildcard include/config/generic/bug.h) \
     $(wildcard include/config/generic/bug/relative/pointers.h) \
+  include/linux/delay.h \
+  arch/arm/include/asm/delay.h \
+  arch/arm/include/asm/memory.h \
+    $(wildcard include/config/need/mach/memory/h.h) \
+    $(wildcard include/config/page/offset.h) \
+    $(wildcard include/config/highmem.h) \
+    $(wildcard include/config/dram/base.h) \
+    $(wildcard include/config/dram/size.h) \
+    $(wildcard include/config/have/tcm.h) \
+    $(wildcard include/config/arm/patch/phys/virt.h) \
+    $(wildcard include/config/phys/offset.h) \
+    $(wildcard include/config/virt/to/bus.h) \
+  include/uapi/linux/const.h \
+  include/linux/sizes.h \
+  include/asm-generic/memory_model.h \
+    $(wildcard include/config/flatmem.h) \
+    $(wildcard include/config/discontigmem.h) \
+    $(wildcard include/config/sparsemem/vmemmap.h) \
+    $(wildcard include/config/sparsemem.h) \
+  arch/arm/include/generated/asm/param.h \
+  include/asm-generic/param.h \
+    $(wildcard include/config/hz.h) \
+  include/uapi/asm-generic/param.h \
   include/linux/ide.h \
     $(wildcard include/config/cris.h) \
     $(wildcard include/config/frv.h) \
@@ -224,10 +270,6 @@ deps_/home/alientek/2、Linux驱动例程/22_spi_ad7799/ad7799.o := \
     $(wildcard include/config/preempt.h) \
   include/uapi/linux/sched.h \
   include/linux/sched/prio.h \
-  arch/arm/include/generated/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/hz.h) \
-  include/uapi/asm-generic/param.h \
   include/linux/capability.h \
     $(wildcard include/config/multiuser.h) \
   include/uapi/linux/capability.h \
@@ -249,7 +291,6 @@ deps_/home/alientek/2、Linux驱动例程/22_spi_ad7799/ad7799.o := \
     $(wildcard include/config/debug/list.h) \
   include/linux/poison.h \
     $(wildcard include/config/illegal/pointer/value.h) \
-  include/uapi/linux/const.h \
   arch/arm/include/generated/asm/preempt.h \
   include/asm-generic/preempt.h \
   include/linux/thread_info.h \
@@ -272,22 +313,6 @@ deps_/home/alientek/2、Linux驱动例程/22_spi_ad7799/ad7799.o := \
     $(wildcard include/config/have/arch/pfn/valid.h) \
   arch/arm/include/asm/glue.h \
   arch/arm/include/asm/pgtable-2level-types.h \
-  arch/arm/include/asm/memory.h \
-    $(wildcard include/config/need/mach/memory/h.h) \
-    $(wildcard include/config/page/offset.h) \
-    $(wildcard include/config/highmem.h) \
-    $(wildcard include/config/dram/base.h) \
-    $(wildcard include/config/dram/size.h) \
-    $(wildcard include/config/have/tcm.h) \
-    $(wildcard include/config/arm/patch/phys/virt.h) \
-    $(wildcard include/config/phys/offset.h) \
-    $(wildcard include/config/virt/to/bus.h) \
-  include/linux/sizes.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/flatmem.h) \
-    $(wildcard include/config/discontigmem.h) \
-    $(wildcard include/config/sparsemem/vmemmap.h) \
-    $(wildcard include/config/sparsemem.h) \
   include/asm-generic/getorder.h \
   arch/arm/include/asm/domain.h \
     $(wildcard include/config/io/36.h) \
@@ -862,8 +887,6 @@ deps_/home/alientek/2、Linux驱动例程/22_spi_ad7799/ad7799.o := \
     $(wildcard include/config/have/mod/arch/specific.h) \
     $(wildcard include/config/modules/use/elf/rel.h) \
     $(wildcard include/config/modules/use/elf/rela.h) \
-  include/linux/delay.h \
-  arch/arm/include/asm/delay.h \
   include/linux/gpio.h \
     $(wildcard include/config/gpiolib.h) \
     $(wildcard include/config/arch/have/custom/gpio/h.h) \
@@ -909,24 +932,32 @@ deps_/home/alientek/2、Linux驱动例程/22_spi_ad7799/ad7799.o := \
   include/linux/gpio/consumer.h \
     $(wildcard include/config/gpio/sysfs.h) \
   include/linux/cdev.h \
-  include/linux/of_gpio.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/i2c.h) \
-    $(wildcard include/config/i2c/slave.h) \
-    $(wildcard include/config/i2c/boardinfo.h) \
-    $(wildcard include/config/i2c/mux.h) \
-  include/uapi/linux/i2c.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/spi.h) \
-  include/linux/kthread.h \
   include/linux/of_address.h \
     $(wildcard include/config/of/address.h) \
-  include/linux/platform_device.h \
-    $(wildcard include/config/suspend.h) \
+  include/linux/of_gpio.h \
   arch/arm/include/asm/mach/map.h \
     $(wildcard include/config/debug/ll.h) \
-  /home/alientek/2、Linux驱动例程/22_spi_ad7799/ad7799reg.h \
+  /home/alientek/2、Linux驱动例程/11_key/ads1118.h \
+    $(wildcard include/config/value.h) \
+    $(wildcard include/config/ss/start/mask.h) \
+    $(wildcard include/config/ss/start/on.h) \
+    $(wildcard include/config/mux/mask.h) \
+    $(wildcard include/config/pga/mask.h) \
+    $(wildcard include/config/mode/mask.h) \
+    $(wildcard include/config/mode/single.h) \
+    $(wildcard include/config/dr/mask.h) \
+    $(wildcard include/config/dr/8sps.h) \
+    $(wildcard include/config/dr/16sps.h) \
+    $(wildcard include/config/dr/32sps.h) \
+    $(wildcard include/config/dr/64sps.h) \
+    $(wildcard include/config/dr/250sps.h) \
+    $(wildcard include/config/dr/475sps.h) \
+    $(wildcard include/config/dr/860sps.h) \
+    $(wildcard include/config/ts/mode/mask.h) \
+    $(wildcard include/config/pull/up/mask.h) \
+    $(wildcard include/config/nop/mask.h) \
+    $(wildcard include/config/nop/invalid.h) \
 
-/home/alientek/2、Linux驱动例程/22_spi_ad7799/ad7799.o: $(deps_/home/alientek/2、Linux驱动例程/22_spi_ad7799/ad7799.o)
+/home/alientek/2、Linux驱动例程/11_key/key.o: $(deps_/home/alientek/2、Linux驱动例程/11_key/key.o)
 
-$(deps_/home/alientek/2、Linux驱动例程/22_spi_ad7799/ad7799.o):
+$(deps_/home/alientek/2、Linux驱动例程/11_key/key.o):

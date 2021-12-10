@@ -53,6 +53,7 @@ int main(int argc, char *argv[])
 		if (keyvalue == KEY0VALUE) {	/* KEY0 */
 			printf("KEY0 Press, value = %#X\r\n", keyvalue);	/* 按下 */
 		}
+		sleep(1);
 	}
 
 	ret= close(fd); /* 关闭文件 */

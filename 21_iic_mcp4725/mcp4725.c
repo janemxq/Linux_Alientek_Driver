@@ -293,7 +293,7 @@ static ssize_t mcp4725_read(struct file *filp, char __user *buf, size_t cnt, lof
 	// u8 data[2];
 	// long err = 0;
 	struct mcp4725_dev *dev = (struct mcp4725_dev *)filp->private_data;
-	 mcp4725_write_regs(dev,0xfff, MCP4725_FAST_MODE, MCP4725_POWER_DOWN_OFF);
+	 mcp4725_write_regs(dev,0x7ff, MCP4725_FAST_MODE, MCP4725_POWER_DOWN_OFF);
 	return mcp4725_read_regs(dev,MCP4725_READ_DAC_REG);
 }
 /*
@@ -307,7 +307,7 @@ static ssize_t mcp4725_read(struct file *filp, char __user *buf, size_t cnt, lof
 static ssize_t mcp4725_write(struct file *filp, char __user *buf, size_t cnt, loff_t *off)
 {
 	int retvalue;
-	u16 data[10];
+	char data[10];
     retvalue= copy_from_user(data, buf, cnt);
 	struct mcp4725_dev *dev = (struct mcp4725_dev *)filp->private_data;
 
@@ -316,8 +316,8 @@ static ssize_t mcp4725_write(struct file *filp, char __user *buf, size_t cnt, lo
 		printk("kernel write failed!\r\n");
 		return -EFAULT;
 	}
-	printk("mcp4725_write data[0]=%x \r\n",data[0]);
-    return mcp4725_write_regs(dev, data[0], MCP4725_FAST_MODE, MCP4725_POWER_DOWN_OFF);
+	printk("mcp4725_write data[0]=%x data[1]=%x cnt=%x\r\n",data[0],data[1],cnt);
+    return mcp4725_write_regs(dev, (data[0]<<8)+data[1], MCP4725_FAST_MODE, MCP4725_POWER_DOWN_OFF);
 }
 /*
  * @description		: 关闭/释放设备
