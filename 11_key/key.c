@@ -258,7 +258,7 @@ static int ads1118_test(struct key_dev *keydev)
 			{
 				ADS_SEL_Read(keydev,4,0,1);//配置下一通道
 				udelay(100);
-				ADS_SEL_Read(keydev,4,0,1);//配置下一通道
+				ADS_SEL_Read(keydev,4,0,1);//配置下一通道1
 			}
 			else
 			{
