@@ -317,7 +317,7 @@ static ssize_t mcp4725_write(struct file *filp, char __user *buf, size_t cnt, lo
 		return -EFAULT;
 	}
 	printk("mcp4725_write data[0]=%x data[1]=%x cnt=%x\r\n",data[0],data[1],cnt);
-    return mcp4725_write_regs(dev, (data[0]<<8)+data[1], MCP4725_FAST_MODE, MCP4725_POWER_DOWN_OFF);
+    return mcp4725_write_regs(dev, (data[1]<<8)+data[0], MCP4725_FAST_MODE, MCP4725_POWER_DOWN_OFF);
 }
 /*
  * @description		: 关闭/释放设备

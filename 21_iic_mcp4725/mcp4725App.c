@@ -52,8 +52,8 @@ int main(int argc, char *argv[])
 		printf("open file %s successs!!!\r\n", filename);
 	}
 	// 3.266v 到达4088已经到达满量程。
-    databuf[0] = atoi(argv[2])>>8;	/* 输入电压值，0-4095 对应 0-3.3v*/
-    databuf[1] = atoi(argv[2])&0xFF;	/* 输入电压值，0-4095 对应 0-3.3v*/
+    databuf[1] = atoi(argv[2])>>8;	/* 输入电压值，0-4095 对应 0-3.3v*/
+    databuf[0] = atoi(argv[2])&0xFF;	/* 输入电压值，0-4095 对应 0-3.3v*/
 	while (1) {
 		ret = write(fd, databuf, 2);
 		// if(ret == 0) { 			/* 数据读取成功 */
