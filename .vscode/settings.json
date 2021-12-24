@@ -4,6 +4,8 @@
         "mcp23017reg.h": "c",
         "ad7799reg.h": "c",
         "errno.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "ads1118.h": "c",
+        "ads1118reg.h": "c"
     }
 }

@@ -651,9 +651,9 @@ printk("ad7799_probe!\r\n");
 	} 
 
 	/* 2、  */
-	ad7799dev.cs_gpio = of_get_named_gpio(ad7799dev.nd, "cs-gpio", 0);
+	ad7799dev.cs_gpio = of_get_named_gpio(ad7799dev.nd, "cs-gpio_ad7799_1", 0);
 	if(ad7799dev.cs_gpio < 0) {
-		printk("can't get cs-gpio");
+		printk("can't get cs-gpio_ad7799_1");
 		return -EINVAL;
 	}
     //  ad7799dev.sclk_gpio = of_get_named_gpio(ad7799dev.nd, "sclk-gpio", 0);

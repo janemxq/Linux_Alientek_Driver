@@ -20,11 +20,7 @@ __attribute__((section("__versions"))) = {
 	{ 0xfa985410, __VMLINUX_SYMBOL_STR(module_layout) },
 	{ 0x87a740ad, __VMLINUX_SYMBOL_STR(driver_unregister) },
 	{ 0x34ce7e95, __VMLINUX_SYMBOL_STR(spi_register_driver) },
-	{ 0x208614a6, __VMLINUX_SYMBOL_STR(kmalloc_caches) },
-	{ 0x37a0cba, __VMLINUX_SYMBOL_STR(kfree) },
-	{ 0x83f62a58, __VMLINUX_SYMBOL_STR(gpiod_get_raw_value) },
-	{ 0xaf26be77, __VMLINUX_SYMBOL_STR(spi_sync) },
-	{ 0xcca6874c, __VMLINUX_SYMBOL_STR(kmem_cache_alloc) },
+	{ 0xb7cfa4a8, __VMLINUX_SYMBOL_STR(gpiod_direction_input) },
 	{ 0xc61ff1f2, __VMLINUX_SYMBOL_STR(gpiod_direction_output_raw) },
 	{ 0x29537c9e, __VMLINUX_SYMBOL_STR(alloc_chrdev_region) },
 	{ 0xde6fb46c, __VMLINUX_SYMBOL_STR(of_get_named_gpio_flags) },
@@ -34,16 +30,15 @@ __attribute__((section("__versions"))) = {
 	{ 0xfeb25d8b, __VMLINUX_SYMBOL_STR(cdev_add) },
 	{ 0xb6828306, __VMLINUX_SYMBOL_STR(cdev_init) },
 	{ 0xd8e484f0, __VMLINUX_SYMBOL_STR(register_chrdev_region) },
-	{ 0x8e865d3c, __VMLINUX_SYMBOL_STR(arm_delay_ops) },
-	{ 0x389329b3, __VMLINUX_SYMBOL_STR(gpiod_set_raw_value) },
-	{ 0x3089e8ae, __VMLINUX_SYMBOL_STR(gpio_to_desc) },
-	{ 0xfa2a45e, __VMLINUX_SYMBOL_STR(__memzero) },
-	{ 0xfbc74f64, __VMLINUX_SYMBOL_STR(__copy_from_user) },
 	{ 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) },
 	{ 0x495be299, __VMLINUX_SYMBOL_STR(class_destroy) },
 	{ 0xc7a1f54a, __VMLINUX_SYMBOL_STR(device_destroy) },
 	{ 0x7485e15e, __VMLINUX_SYMBOL_STR(unregister_chrdev_region) },
 	{ 0xb37da9a1, __VMLINUX_SYMBOL_STR(cdev_del) },
+	{ 0x8e865d3c, __VMLINUX_SYMBOL_STR(arm_delay_ops) },
+	{ 0x83f62a58, __VMLINUX_SYMBOL_STR(gpiod_get_raw_value) },
+	{ 0x389329b3, __VMLINUX_SYMBOL_STR(gpiod_set_raw_value) },
+	{ 0x3089e8ae, __VMLINUX_SYMBOL_STR(gpio_to_desc) },
 	{ 0xefd6cf06, __VMLINUX_SYMBOL_STR(__aeabi_unwind_cpp_pr0) },
 };
 
@@ -53,4 +48,4 @@ __attribute__((section(".modinfo"))) =
 "depends=";
 
 
-MODULE_INFO(srcversion, "D4CEF75CF5E3F111DC2C320");
+MODULE_INFO(srcversion, "E96273AA6ECBCBD57C5A544");

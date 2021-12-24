@@ -7,9 +7,10 @@ deps_/home/alientek/2、Linux驱动例程/22_spi_ads1118/ads1118.o := \
     $(wildcard include/config/mode/contin.h) \
     $(wildcard include/config/dr/128sps.h) \
     $(wildcard include/config/ts/mode/adc.h) \
-    $(wildcard include/config/pull/up/on.h) \
+    $(wildcard include/config/pull/up/off.h) \
     $(wildcard include/config/nop/valid.h) \
     $(wildcard include/config/resv.h) \
+    $(wildcard include/config/ts/mode/temp.h) \
     $(wildcard include/config/mux/diff/0/1.h) \
     $(wildcard include/config/mux/diff/0/3.h) \
     $(wildcard include/config/mux/diff/1/3.h) \
@@ -24,7 +25,7 @@ deps_/home/alientek/2、Linux驱动例程/22_spi_ads1118/ads1118.o := \
     $(wildcard include/config/pga/1/024v.h) \
     $(wildcard include/config/pga/0/512v.h) \
     $(wildcard include/config/pga/0/256v.h) \
-    $(wildcard include/config/ts/mode/temp.h) \
+    $(wildcard include/config/pull/up/on.h) \
   include/linux/types.h \
     $(wildcard include/config/uid16.h) \
     $(wildcard include/config/lbdaf.h) \
@@ -965,7 +966,6 @@ deps_/home/alientek/2、Linux驱动例程/22_spi_ads1118/ads1118.o := \
     $(wildcard include/config/dr/860sps.h) \
     $(wildcard include/config/ts/mode/mask.h) \
     $(wildcard include/config/pull/up/mask.h) \
-    $(wildcard include/config/pull/up/off.h) \
     $(wildcard include/config/nop/mask.h) \
     $(wildcard include/config/nop/invalid.h) \
 

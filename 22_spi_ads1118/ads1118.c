@@ -86,7 +86,7 @@ struct Ads1118_dev {
 };
 
 static struct Ads1118_dev ads1118dev;
-static u8 chipNum;
+// static u8 chipNum;
 /*
  * NOTE: the bit offsets in the datasheet are 16 bit big
  * endian. I've swapped upper and lower bytes in the defines
@@ -182,31 +182,31 @@ static int ads1118_chan_set_rate(struct Ads1118_dev *ads,
  * @param - len:  要读取的数据长度
  * @return 		: 操作结果
  */
-static int ads1118_read_reg(struct Ads1118_dev *dev, void *buf, int len)
-{
-	int ret;
-	unsigned char txdata[len];
-	struct spi_message m;
-	struct spi_transfer *t;
-	struct spi_device *spi = (struct spi_device *)dev->private_data;
+// static int ads1118_read_reg(struct Ads1118_dev *dev, void *buf, int len)
+// {
+// 	int ret;
+// 	unsigned char txdata[len];
+// 	struct spi_message m;
+// 	struct spi_transfer *t;
+// 	struct spi_device *spi = (struct spi_device *)dev->private_data;
 
-	gpio_set_value(dev->cs_gpio, 0);				/* 片选拉低，选中ads1118 */
-	t = kzalloc(sizeof(struct spi_transfer), GFP_KERNEL);	/* 申请内存 */
+// 	gpio_set_value(dev->cs_gpio, 0);				/* 片选拉低，选中ads1118 */
+// 	t = kzalloc(sizeof(struct spi_transfer), GFP_KERNEL);	/* 申请内存 */
 
-	/* 读取数据 */
-	txdata[0] = 0xff;			/* 随便一个值，此处无意义 */
-	t->rx_buf = buf;			/* 读取到的数据 */
-	t->len = len;				/* 要读取的数据长度 */
-	spi_message_init(&m);		/* 初始化spi_message */
-	spi_message_add_tail(t, &m);/* 将spi_transfer添加到spi_message队列 */
-	ret = spi_sync(spi, &m);	/* 同步发送 */
-    printk("ads1118_read_reg ret=%02X rx_buf=%04X len=%02X !\r\n",ret,t->rx_buf,len);
+// 	/* 读取数据 */
+// 	txdata[0] = 0xff;			/* 随便一个值，此处无意义 */
+// 	t->rx_buf = buf;			/* 读取到的数据 */
+// 	t->len = len;				/* 要读取的数据长度 */
+// 	spi_message_init(&m);		/* 初始化spi_message */
+// 	spi_message_add_tail(t, &m);/* 将spi_transfer添加到spi_message队列 */
+// 	ret = spi_sync(spi, &m);	/* 同步发送 */
+//     printk("ads1118_read_reg ret=%02X rx_buf=%04X len=%02X !\r\n",ret,t->rx_buf,len);
     
-	kfree(t);									/* 释放内存 */
-	gpio_set_value(dev->cs_gpio, 1);			/* 片选拉高，释放ads1118 */
+// 	kfree(t);									/* 释放内存 */
+// 	gpio_set_value(dev->cs_gpio, 1);			/* 片选拉高，释放ads1118 */
 
-	return ret;
-}
+// 	return ret;
+// }
 /*
  * @description	: 向ads1118多个寄存器写入数据
  * @param - dev:  ads1118设备
@@ -214,49 +214,49 @@ static int ads1118_read_reg(struct Ads1118_dev *dev, void *buf, int len)
  * @param - len:  要写入的数据长度
  * @return 	  :   操作结果
  */
-static s32 ads1118_write_regs(struct Ads1118_dev *dev, u8 *buf, u8 len)
-{
-	int ret;
-    int timeout =0;
-	unsigned char rxdata[4];
-	struct spi_message m;
-	struct spi_transfer *t;
-	struct spi_device *spi = (struct spi_device *)dev->private_data;
+// static s32 ads1118_write_regs(struct Ads1118_dev *dev, u8 *buf, u8 len)
+// {
+// 	int ret;
+//     int timeout =0;
+// 	unsigned char rxdata[4];
+// 	struct spi_message m;
+// 	struct spi_transfer *t;
+// 	struct spi_device *spi = (struct spi_device *)dev->private_data;
 
-	t = kzalloc(sizeof(struct spi_transfer), GFP_KERNEL);	/* 申请内存 */
-	gpio_set_value(dev->cs_gpio, 0);			/* 片选拉低 */
-	udelay(1);
-	/* 发送要写入的数据 */
-	t->tx_buf = buf;			/* 要写入的数据 */
-	t->len = len;				/* 写入的字节数 */
-	spi_message_init(&m);		/* 初始化spi_message */
-	spi_message_add_tail(t, &m);/* 将spi_transfer添加到spi_message队列 */
-	ret = spi_sync(spi, &m);	/* 同步发送 */
-    printk("ads1118_write_regs ret=%02X buf[0]=%02X buf[1]=%02X cs_gpio =%d !\r\n",ret,buf[0],buf[1],gpio_get_value(dev->cs_gpio));
-	// gpio_set_value(dev->cs_gpio, 1);/* 片选拉高，释放ads1118 */
+// 	t = kzalloc(sizeof(struct spi_transfer), GFP_KERNEL);	/* 申请内存 */
+// 	gpio_set_value(dev->cs_gpio, 0);			/* 片选拉低 */
+// 	udelay(1);
+// 	/* 发送要写入的数据 */
+// 	t->tx_buf = buf;			/* 要写入的数据 */
+// 	t->len = len;				/* 写入的字节数 */
+// 	spi_message_init(&m);		/* 初始化spi_message */
+// 	spi_message_add_tail(t, &m);/* 将spi_transfer添加到spi_message队列 */
+// 	ret = spi_sync(spi, &m);	/* 同步发送 */
+//     printk("ads1118_write_regs ret=%02X buf[0]=%02X buf[1]=%02X cs_gpio =%d !\r\n",ret,buf[0],buf[1],gpio_get_value(dev->cs_gpio));
+// 	// gpio_set_value(dev->cs_gpio, 1);/* 片选拉高，释放ads1118 */
 	
-	while(gpio_get_value(dev->miso_gpio)==1)
-	{
-		timeout++;
-        mdelay(1);
-		printk("timeoust --");
-	  if(timeout >=100)break;
-	}
-	// gpio_set_value(dev->cs_gpio, 0);			/* 片选拉低 */
-	udelay(1);
-	/* 读取数据 */
-	buf[0] = 0xff;			/* 随便一个值，此处无意义 */
-	t->rx_buf = rxdata;			/* 读取到的数据 */
-	t->len = 2;				/* 要读取的数据长度 */
-	spi_message_init(&m);		/* 初始化spi_message */
-	spi_message_add_tail(t, &m);/* 将spi_transfer添加到spi_message队列 */
-	ret = spi_sync(spi, &m);	/* 同步发送 */
-	printk("read regs ret=%02X rxdata[0]=%02X rxdata[1]=%02X !\r\n",ret,rxdata[0],rxdata[1]);
-	kfree(t);					/* 释放内存 */
-	gpio_set_value(dev->cs_gpio, 1);/* 片选拉高，释放ads1118 */
-	// printk("cs_gpio =%d \n",gpio_get_value(dev->cs_gpio));
-	return ret;
-}
+// 	while(gpio_get_value(dev->miso_gpio)==1)
+// 	{
+// 		timeout++;
+//         mdelay(1);
+// 		printk("timeoust --");
+// 	  if(timeout >=100)break;
+// 	}
+// 	// gpio_set_value(dev->cs_gpio, 0);			/* 片选拉低 */
+// 	udelay(1);
+// 	/* 读取数据 */
+// 	buf[0] = 0xff;			/* 随便一个值，此处无意义 */
+// 	t->rx_buf = rxdata;			/* 读取到的数据 */
+// 	t->len = 2;				/* 要读取的数据长度 */
+// 	spi_message_init(&m);		/* 初始化spi_message */
+// 	spi_message_add_tail(t, &m);/* 将spi_transfer添加到spi_message队列 */
+// 	ret = spi_sync(spi, &m);	/* 同步发送 */
+// 	printk("read regs ret=%02X rxdata[0]=%02X rxdata[1]=%02X !\r\n",ret,rxdata[0],rxdata[1]);
+// 	kfree(t);					/* 释放内存 */
+// 	gpio_set_value(dev->cs_gpio, 1);/* 片选拉高，释放ads1118 */
+// 	// printk("cs_gpio =%d \n",gpio_get_value(dev->cs_gpio));
+// 	return ret;
+// }
 /*
  * @description		: 打开设备
  * @param - inode 	: 传递给驱动的inode
@@ -270,6 +270,56 @@ static int ads1118_open(struct inode *inode, struct file *filp)
 	return 0;
 }
 /*******************************************************************************
+//函数名称：Write_ADS1118（）
+//函数功能：设置1118寄存器
+//输    入：config:寄存器配置
+//          discardData: 是否更新读回数据 0读回 1不读回
+//返    回： 16位ad转换数据
+//备    注： 
+*******************************************************************************/
+static int16_t Write_ADS1118(struct Ads1118_dev *ads,uint16_t config,uint8_t discardData)
+{
+	uint8_t i=0;
+    int16_t read=0;
+	// mutex_lock(&ads1118dev.update_lock);
+	CS_L(ads->cs_gpio);
+	if(discardData==0) 
+	{
+		read=0;
+	}
+	// delay_us(1);
+	udelay(1);
+	for(i=0;i<16;i++)     // 循环16次 
+	{		
+		if(config & 0x8000)MOSI_H(ads->mosi_gpio);
+		else MOSI_L(ads->mosi_gpio);
+		config <<= 1;
+
+		udelay(1);
+		SCLK_H(ads->sclk_gpio);
+		udelay(1);
+		SCLK_L(ads->sclk_gpio);
+		udelay(1);
+		
+		if(discardData==0)
+		{
+			read<<=1;
+			if(READ_MISO(ads->miso_gpio)==1)read ++;
+				
+		}else{
+			udelay(2);
+		}
+	}
+	CS_H(ads->cs_gpio);
+	udelay(2);
+	CS_L(ads->cs_gpio);
+	// mutex_unlock(&ads1118dev.update_lock);
+//	SCLK_L;
+//	MOSI_L;
+//	MISO_H;
+	return read;
+}
+/*******************************************************************************
 //函数名称：ADS_SEL_Read（）
 //函数功能：读取各路电压，通过两个switch选择读取不同的通道
 //输    入：road:增益放大器两端的电压选择，并选择测几路电压
@@ -279,16 +329,18 @@ static int ads1118_open(struct inode *inode, struct file *filp)
 //备    注：这一次读出的转换数据是上一次的转换数据，不要混淆.这里选择的是单次
             转换电压值，当然，也可以选择多次转换,通过寄存器的第8位可以设置
 *******************************************************************************/
-int16_t ADS_SEL_Read(struct Ads1118_dev * dev,uint8_t road,uint8_t Ref,uint8_t mode)         //测几路电压
+int16_t ADS_SEL_Read(struct Ads1118_dev *ads,uint8_t road,uint8_t Ref,uint8_t mode)         //测几路电压
 {
     int dat = 0;
-	uint16_t config = ADS1118_CONFIG_SS_START_OFF |  // 
-				ADS1118_CONFIG_MODE_CONTIN  |  //连续转换模式 
-				ADS1118_CONFIG_DR_128SPS   |  // 转换 速率 SPS
-				ADS1118_CONFIG_TS_MODE_ADC |  // 读取ADC，而不是温度
-				ADS1118_CONFIG_PULL_UP_ON  |  //上拉电阻启用
-				ADS1118_CONFIG_NOP_VALID   |  // this is valid data (default)
-				ADS1118_CONFIG_RESV;          // reserved bits must be set to 1
+		uint16_t config = ADS1118_CONFIG_SS_START_OFF |  // 
+                    ADS1118_CONFIG_MODE_CONTIN  |  //连续转换模式 
+                    ADS1118_CONFIG_DR_128SPS   |  // 转换 速率 SPS
+                    ADS1118_CONFIG_TS_MODE_ADC |  // 读取ADC，而不是温度
+                    ADS1118_CONFIG_PULL_UP_OFF  |  //上拉电阻启用
+                    ADS1118_CONFIG_NOP_VALID   |  // this is valid data (default)
+                    ADS1118_CONFIG_RESV;          // reserved bits must be set to 1
+	if(road == 8)config|=ADS1118_CONFIG_TS_MODE_TEMP;
+	else config|=ADS1118_CONFIG_TS_MODE_ADC;
     switch(road)	   //选择有效转换的路数
     {
 			case 0:  config |= ADS1118_CONFIG_MUX_DIFF_0_1;break;    //AINP = AIN0 and AINN = AIN1 (default)
@@ -311,143 +363,196 @@ int16_t ADS_SEL_Read(struct Ads1118_dev * dev,uint8_t road,uint8_t Ref,uint8_t m
 			case 5: case 6: case 7: config |= ADS1118_CONFIG_PGA_0_256V;break;    //005 : FS = ±0.256V(1)
 			default : break;
     }
-    ads1118_write_regs(dev,&config,mode);
-	ads1118_read_reg(dev,dat,2);
+	// if(mode)
+	// {
+	//   printk("config=%X\r\n",config);
+	// }
+    dat = Write_ADS1118(ads,config,mode);
     return dat;
 }
+/*******************************************************************************
+//函数名称：ADS_SEL_Read（）
+//函数功能：读取各路电压，通过两个switch选择读取不同的通道
+//输    入：road:增益放大器两端的电压选择，并选择测几路电压
+//          Ref: 选择参考电压，有6种选择
+//          mode: 是否更新读回数据 0读回 1不读回
+//输    出：dat：16位ad转换数据
+//备    注：这一次读出的转换数据是上一次的转换数据，不要混淆.这里选择的是单次
+            转换电压值，当然，也可以选择多次转换,通过寄存器的第8位可以设置
+*******************************************************************************/
+// int16_t ADS_SEL_Read(struct Ads1118_dev * dev,uint8_t road,uint8_t Ref,uint8_t mode)         //测几路电压
+// {
+//     int dat = 0;
+// 	uint16_t config = ADS1118_CONFIG_SS_START_OFF |  // 
+// 				ADS1118_CONFIG_MODE_CONTIN  |  //连续转换模式 
+// 				ADS1118_CONFIG_DR_128SPS   |  // 转换 速率 SPS
+// 				ADS1118_CONFIG_TS_MODE_ADC |  // 读取ADC，而不是温度
+// 				ADS1118_CONFIG_PULL_UP_ON  |  //上拉电阻启用
+// 				ADS1118_CONFIG_NOP_VALID   |  // this is valid data (default)
+// 				ADS1118_CONFIG_RESV;          // reserved bits must be set to 1
+//     switch(road)	   //选择有效转换的路数
+//     {
+// 			case 0:  config |= ADS1118_CONFIG_MUX_DIFF_0_1;break;    //AINP = AIN0 and AINN = AIN1 (default)
+// 			case 1:  config |= ADS1118_CONFIG_MUX_DIFF_0_3;break;    //AINP = AIN0 and AINN = AIN3
+// 			case 2:  config |= ADS1118_CONFIG_MUX_DIFF_1_3;break;    //AINP = AIN1 and AINN = AIN3
+// 			case 3:  config |= ADS1118_CONFIG_MUX_DIFF_2_3;break;    //AINP = AIN2 and AINN = AIN3
+// 			case 4:  config |= ADS1118_CONFIG_MUX_SINGLE_0;break;    //AINP = AIN0 and AINN = GND
+// 			case 5:  config |= ADS1118_CONFIG_MUX_SINGLE_1;break;    //AINP = AIN1 and AINN = GND
+// 			case 6:  config |= ADS1118_CONFIG_MUX_SINGLE_2;break;    //AINP = AIN2 and AINN = GND
+// 			case 7:  config |= ADS1118_CONFIG_MUX_SINGLE_3;break;    //AINP = AIN3 and AINN = GND
+// 			default : break;
+//     }
+//     switch(Ref)
+//     {
+// 			case 0:  config |= ADS1118_CONFIG_PGA_6_144V;break;    //000 : FS = ±6.144V(1)
+// 			case 1:  config |= ADS1118_CONFIG_PGA_4_096V;break;    //001 : FS = ±4.096V(1)
+// 			case 2:  config |= ADS1118_CONFIG_PGA_2_048V;break;    //002 : FS = ±2.048V(1)
+// 			case 3:  config |= ADS1118_CONFIG_PGA_1_024V;break;    //003 : FS = ±1.024V(1)
+// 			case 4:  config |= ADS1118_CONFIG_PGA_0_512V;break;    //004 : FS = ±0.512V(1)
+// 			case 5: case 6: case 7: config |= ADS1118_CONFIG_PGA_0_256V;break;    //005 : FS = ±0.256V(1)
+// 			default : break;
+//     }
+//     ads1118_write_regs(dev,&config,mode);
+// 	ads1118_read_reg(dev,dat,2);
+//     return dat;
+// }
 static int ads1118_testIO(struct Ads1118_dev *ads)
 {
 	int i;
+	printk(" ads1118_testIO 1");
 	for (i = 0; i <100;i++) 
 	{
       gpio_set_value(ads->cs_gpio, 0);			/* 片选拉低 */
       gpio_set_value(ads->mosi_gpio, 0);
       gpio_set_value(ads->sclk_gpio, 0);
+      gpio_get_value(ads->miso_gpio);
 	   mdelay(10);
 	  gpio_set_value(ads->cs_gpio, 1);			/* 片选拉低 */
 	  gpio_set_value(ads->mosi_gpio, 1);
 	  gpio_set_value(ads->sclk_gpio, 1);
+      gpio_get_value(ads->miso_gpio);
 	}
+	printk(" ads1118_testIO 1");
 	return 1;
 }
-static int ads1118_read_adc(struct Ads1118_dev *ads, struct ads_channel *chan,
-			    s16 *value)
-{
-	int ret;
-	u8 buf[2];
-	struct spi_device *spi = (struct spi_device *)ads->private_data;
-    chan->cfg=ADS1118_CONFIG_SS_START_OFF | ADS1118_CONFIG_MUX_SINGLE_0| // 
-                    ADS1118_CONFIG_MODE_CONTIN  |  //连续转换模式 
-                    ADS1118_CONFIG_DR_128SPS   |  // 转换 速率 SPS
-                    ADS1118_CONFIG_TS_MODE_ADC |  // 读取ADC，而不是温度
-                    ADS1118_CONFIG_PULL_UP_ON  |  //上拉电阻启用
-                    ADS1118_CONFIG_NOP_VALID   |  // this is valid data (default)
-                    ADS1118_CONFIG_RESV|ADS1118_CONFIG_PGA_4_096V;          // reserved bits must be set to 1
-	// mutex_lock(&ads->update_lock);
-	// gpio_set_value(ads->cs_gpio, 0);			/* 片选拉低 */
-	// chan->cfg = ADS1118_CONFIG_SS_START_OFF |  // 
-    //                 ADS1118_CONFIG_MODE_CONTIN  |  //连续转换模式 
-    //                 ADS1118_CONFIG_DR_128SPS   |  // 转换 速率 SPS
-    //                 ADS1118_CONFIG_TS_MODE_TEMP |  // 读取温度
-    //                 ADS1118_CONFIG_PULL_UP_ON  |  //上拉电阻启用
-    //                 ADS1118_CONFIG_NOP_VALID   |  // this is valid data (default)
-    //                 ADS1118_CONFIG_RESV|// reserved bits must be set to 1
-	// 				ADS1118_CONFIG_PGA_4_096V;
-					// chan->cfg =0x058B|ADS1118_CONFIG_TS_MODE_TEMP ;
-    printk("spi_write chan->cfg=%x\n", chan->cfg);
-	// ret = spi_write(spi, &chan->cfg, sizeof(chan->cfg));
+// static int ads1118_read_adc(struct Ads1118_dev *ads, struct ads_channel *chan,
+// 			    s16 *value)
+// {
+// 	int ret;
+// 	u8 buf[2];
+// 	struct spi_device *spi = (struct spi_device *)ads->private_data;
+//     chan->cfg=ADS1118_CONFIG_SS_START_OFF | ADS1118_CONFIG_MUX_SINGLE_0| // 
+//                     ADS1118_CONFIG_MODE_CONTIN  |  //连续转换模式 
+//                     ADS1118_CONFIG_DR_128SPS   |  // 转换 速率 SPS
+//                     ADS1118_CONFIG_TS_MODE_ADC |  // 读取ADC，而不是温度
+//                     ADS1118_CONFIG_PULL_UP_ON  |  //上拉电阻启用
+//                     ADS1118_CONFIG_NOP_VALID   |  // this is valid data (default)
+//                     ADS1118_CONFIG_RESV|ADS1118_CONFIG_PGA_4_096V;          // reserved bits must be set to 1
+// 	// mutex_lock(&ads->update_lock);
+// 	// gpio_set_value(ads->cs_gpio, 0);			/* 片选拉低 */
+// 	// chan->cfg = ADS1118_CONFIG_SS_START_OFF |  // 
+//     //                 ADS1118_CONFIG_MODE_CONTIN  |  //连续转换模式 
+//     //                 ADS1118_CONFIG_DR_128SPS   |  // 转换 速率 SPS
+//     //                 ADS1118_CONFIG_TS_MODE_TEMP |  // 读取温度
+//     //                 ADS1118_CONFIG_PULL_UP_ON  |  //上拉电阻启用
+//     //                 ADS1118_CONFIG_NOP_VALID   |  // this is valid data (default)
+//     //                 ADS1118_CONFIG_RESV|// reserved bits must be set to 1
+// 	// 				ADS1118_CONFIG_PGA_4_096V;
+// 					// chan->cfg =0x058B|ADS1118_CONFIG_TS_MODE_TEMP ;
+//     printk("spi_write chan->cfg=%x\n", chan->cfg);
+// 	// ret = spi_write(spi, &chan->cfg, sizeof(chan->cfg));
 	
-	// buf[0]=chan->cfg>>8;
-	// buf[1]=chan->cfg&0xFF;
-	// ret = spi_write(spi, buf, 2);
-	// ret = ads1118_write_regs(ads, buf, 2);
-	// ret = ads1118_write_regs(ads, buf, 2);
-	// // if (ret < 0)
-	// if (ret )
-	// {
-	// 	printk("spi_write eror=%d\n", ret);
-	// 	return ret;
-	// }
+// 	// buf[0]=chan->cfg>>8;
+// 	// buf[1]=chan->cfg&0xFF;
+// 	// ret = spi_write(spi, buf, 2);
+// 	// ret = ads1118_write_regs(ads, buf, 2);
+// 	// ret = ads1118_write_regs(ads, buf, 2);
+// 	// // if (ret < 0)
+// 	// if (ret )
+// 	// {
+// 	// 	printk("spi_write eror=%d\n", ret);
+// 	// 	return ret;
+// 	// }
 
-	ads1118_testIO(ads);
-    // gpio_set_value(ads->cs_gpio, 1);/* 片选拉高，释放ads1118 */
-	/* wait until conversion finished */
-	// msleep(chan->delay_ms);
-	// udelay(10);
-    // gpio_set_value(ads->cs_gpio, 0);			/* 片选拉低 */
-	// msleep(chan->delay_ms);
-	// ret = spi_read(spi, &buf, sizeof(buf));
-	// ret = ads1118_read_reg(spi, &buf, sizeof(buf));
-	// if (ret)
-	// {
-	// 	printk("spi_read eror=%d\n", ret);
-	//     dev_info(&spi->dev, "error reading: %d\n", ret);
-	// }
-    printk("spi_read buf=%X\n", buf);
-	*value = (s16)be16_to_cpu(buf);
+// 	ads1118_testIO(ads);
+//     // gpio_set_value(ads->cs_gpio, 1);/* 片选拉高，释放ads1118 */
+// 	/* wait until conversion finished */
+// 	// msleep(chan->delay_ms);
+// 	// udelay(10);
+//     // gpio_set_value(ads->cs_gpio, 0);			/* 片选拉低 */
+// 	// msleep(chan->delay_ms);
+// 	// ret = spi_read(spi, &buf, sizeof(buf));
+// 	// ret = ads1118_read_reg(spi, &buf, sizeof(buf));
+// 	// if (ret)
+// 	// {
+// 	// 	printk("spi_read eror=%d\n", ret);
+// 	//     dev_info(&spi->dev, "error reading: %d\n", ret);
+// 	// }
+//     printk("spi_read buf=%X\n", buf);
+// 	*value = (s16)be16_to_cpu(buf);
 
-// err_unlock:
-	// mutex_unlock(&ads->update_lock);
-	gpio_set_value(ads->cs_gpio, 1);/* 片选拉高，释放ads1118 */
+// // err_unlock:
+// 	// mutex_unlock(&ads->update_lock);
+// 	gpio_set_value(ads->cs_gpio, 1);/* 片选拉高，释放ads1118 */
 
-	return ret;
-}
-static void ads1118_temp_chan_enable(struct Ads1118_dev *ads)
-{
-	struct ads_channel *chan = &ads->channel_data[ADS1118_TEMP_CHAN];
-	unsigned int rate = ads->ref->rates[ADS1118_DEFAULT_DR];
+// 	return ret;
+// }
+// static void ads1118_temp_chan_enable(struct Ads1118_dev *ads)
+// {
+// 	struct ads_channel *chan = &ads->channel_data[ADS1118_TEMP_CHAN];
+// 	unsigned int rate = ads->ref->rates[ADS1118_DEFAULT_DR];
 
-	chan->cfg = ADS1118_CONFIG_SS_START_OFF |  // 
-                    ADS1118_CONFIG_MODE_CONTIN  |  //连续转换模式 
-                    ADS1118_CONFIG_DR_128SPS   |  // 转换 速率 SPS
-                    ADS1118_CONFIG_TS_MODE_TEMP |  // 读取温度
-                    ADS1118_CONFIG_PULL_UP_ON  |  //上拉电阻启用
-                    ADS1118_CONFIG_NOP_VALID   |  // this is valid data (default)
-                    ADS1118_CONFIG_RESV|// reserved bits must be set to 1
-					ADS1118_CONFIG_PGA_4_096V;
-	ads1118_chan_set_rate(ads, chan, rate);
-	chan->enabled = true;
-}
+// 	chan->cfg = ADS1118_CONFIG_SS_START_OFF |  // 
+//                     ADS1118_CONFIG_MODE_CONTIN  |  //连续转换模式 
+//                     ADS1118_CONFIG_DR_128SPS   |  // 转换 速率 SPS
+//                     ADS1118_CONFIG_TS_MODE_TEMP |  // 读取温度
+//                     ADS1118_CONFIG_PULL_UP_ON  |  //上拉电阻启用
+//                     ADS1118_CONFIG_NOP_VALID   |  // this is valid data (default)
+//                     ADS1118_CONFIG_RESV|// reserved bits must be set to 1
+// 					ADS1118_CONFIG_PGA_4_096V;
+// 	ads1118_chan_set_rate(ads, chan, rate);
+// 	chan->enabled = true;
+// }
 
-static void ads1118_enable_all(struct Ads1118_dev *ads)
-{
-	unsigned int i;
-	unsigned int fullscale = fullscale_table[ADS1118_DEFAULT_PGA];
-	unsigned int rate = ads1118_table.rates[ADS1118_DEFAULT_DR];
+// static void ads1118_enable_all(struct Ads1118_dev *ads)
+// {
+// 	unsigned int i;
+// 	unsigned int fullscale = fullscale_table[ADS1118_DEFAULT_PGA];
+// 	unsigned int rate = ads1118_table.rates[ADS1118_DEFAULT_DR];
 
-	ads1118_temp_chan_enable(ads);
+// 	ads1118_temp_chan_enable(ads);
 
-	for (i = 0; i < ADS1118_TEMP_CHAN; ++i) {
-		struct ads_channel *chan = &ads->channel_data[i];
+// 	for (i = 0; i < ADS1118_TEMP_CHAN; ++i) {
+// 		struct ads_channel *chan = &ads->channel_data[i];
 
-		// chan->cfg = ADS1118_ADC_CFG;
-		chan->cfg=ADS1118_CONFIG_SS_START_OFF |  // 
-                    ADS1118_CONFIG_MODE_CONTIN  |  //连续转换模式 
-                    ADS1118_CONFIG_DR_128SPS   |  // 转换 速率 SPS
-                    ADS1118_CONFIG_TS_MODE_ADC |  // 读取ADC，而不是温度
-                    ADS1118_CONFIG_PULL_UP_ON  |  //上拉电阻启用
-                    ADS1118_CONFIG_NOP_VALID   |  // this is valid data (default)
-                    ADS1118_CONFIG_RESV|// reserved bits must be set to 1
-					ADS1118_CONFIG_PGA_4_096V;          
-		// ads1118_channel_set_pga(chan, fullscale);
-		chan->delay_ms = DIV_ROUND_UP(1000, rate);
-		// ads1118_chan_set_rate(ads, chan, rate);
-		// ads1118_chan_set_mux(chan, (u16)i, ADS1118_MUX_AINN_GND);
-		switch(i+4)	   //选择有效转换的路数
-		{
-				case 0:  chan->cfg |= ADS1118_CONFIG_MUX_DIFF_0_1;break;    //AINP = AIN0 and AINN = AIN1 (default)
-				case 1:  chan->cfg |= ADS1118_CONFIG_MUX_DIFF_0_3;break;    //AINP = AIN0 and AINN = AIN3
-				case 2:  chan->cfg |= ADS1118_CONFIG_MUX_DIFF_1_3;break;    //AINP = AIN1 and AINN = AIN3
-				case 3:  chan->cfg |= ADS1118_CONFIG_MUX_DIFF_2_3;break;    //AINP = AIN2 and AINN = AIN3
-				case 4:  chan->cfg |= ADS1118_CONFIG_MUX_SINGLE_0;break;    //AINP = AIN0 and AINN = GND
-				case 5:  chan->cfg |= ADS1118_CONFIG_MUX_SINGLE_1;break;    //AINP = AIN1 and AINN = GND
-				case 6:  chan->cfg |= ADS1118_CONFIG_MUX_SINGLE_2;break;    //AINP = AIN2 and AINN = GND
-				case 7:  chan->cfg |= ADS1118_CONFIG_MUX_SINGLE_3;break;    //AINP = AIN3 and AINN = GND
-				default : break;
-		}
-		chan->enabled = true;
-	}
-}
+// 		// chan->cfg = ADS1118_ADC_CFG;
+// 		chan->cfg=ADS1118_CONFIG_SS_START_OFF |  // 
+//                     ADS1118_CONFIG_MODE_CONTIN  |  //连续转换模式 
+//                     ADS1118_CONFIG_DR_128SPS   |  // 转换 速率 SPS
+//                     ADS1118_CONFIG_TS_MODE_ADC |  // 读取ADC，而不是温度
+//                     ADS1118_CONFIG_PULL_UP_ON  |  //上拉电阻启用
+//                     ADS1118_CONFIG_NOP_VALID   |  // this is valid data (default)
+//                     ADS1118_CONFIG_RESV|// reserved bits must be set to 1
+// 					ADS1118_CONFIG_PGA_4_096V;          
+// 		// ads1118_channel_set_pga(chan, fullscale);
+// 		chan->delay_ms = DIV_ROUND_UP(1000, rate);
+// 		// ads1118_chan_set_rate(ads, chan, rate);
+// 		// ads1118_chan_set_mux(chan, (u16)i, ADS1118_MUX_AINN_GND);
+// 		switch(i+4)	   //选择有效转换的路数
+// 		{
+// 				case 0:  chan->cfg |= ADS1118_CONFIG_MUX_DIFF_0_1;break;    //AINP = AIN0 and AINN = AIN1 (default)
+// 				case 1:  chan->cfg |= ADS1118_CONFIG_MUX_DIFF_0_3;break;    //AINP = AIN0 and AINN = AIN3
+// 				case 2:  chan->cfg |= ADS1118_CONFIG_MUX_DIFF_1_3;break;    //AINP = AIN1 and AINN = AIN3
+// 				case 3:  chan->cfg |= ADS1118_CONFIG_MUX_DIFF_2_3;break;    //AINP = AIN2 and AINN = AIN3
+// 				case 4:  chan->cfg |= ADS1118_CONFIG_MUX_SINGLE_0;break;    //AINP = AIN0 and AINN = GND
+// 				case 5:  chan->cfg |= ADS1118_CONFIG_MUX_SINGLE_1;break;    //AINP = AIN1 and AINN = GND
+// 				case 6:  chan->cfg |= ADS1118_CONFIG_MUX_SINGLE_2;break;    //AINP = AIN2 and AINN = GND
+// 				case 7:  chan->cfg |= ADS1118_CONFIG_MUX_SINGLE_3;break;    //AINP = AIN3 and AINN = GND
+// 				default : break;
+// 		}
+// 		chan->enabled = true;
+// 	}
+// }
 /*
  * @description		: 从设备读取数据 
  * @param - filp 	: 要打开的设备文件(文件描述符)
@@ -458,33 +563,36 @@ static void ads1118_enable_all(struct Ads1118_dev *ads)
  */
 static ssize_t ads1118_read(struct file *filp, int16_t __user *buf, size_t cnt, loff_t *off)
 {
-	// int16_t data[4];
-	s16 read_value;
 	int channel=0;
+	int16_t value[5];
 	struct Ads1118_dev *dev = (struct Ads1118_dev *)filp->private_data;
-	struct ads_channel *chan ;
-	// chan->config=ADS1118_ADC_CFG;
-    // chan->enabled=true;
-	// chan->pga= fullscale;
-
-	// data[0]=ADS_SEL_Read(dev,4,1,0);
-	// copy_to_user(buf, data, sizeof(data));
-	// return 0;
-	int microvolts;
-	int ret;
-	int i;
-    for(i=0; i<1;i++)
+	for (channel = 0; channel <5;)
 	{
-		printk("chanel %d  ----------------\r\n",i+1);
-		chan = &dev->channel_data[i];
-		ret = ads1118_read_adc(dev, chan, &read_value);
-		if (ret < 0)
-			return ret;
-		microvolts = DIV_ROUND_CLOSEST(read_value * 4096,
-						0x7fff);
-		printk("温度 =%d\r\n", (((int)read_value) * 1000) >> 7);
+		if(READ_MISO(dev->miso_gpio)==0)
+		{
+			value[channel]=ADS_SEL_Read(dev,channel+4,0,0); //读取通道
+			if(channel==4) 
+			{
+				ADS_SEL_Read(dev,4,0,1);//配置下一通道
+				udelay(100);
+				ADS_SEL_Read(dev,4,0,1);//配置下一通道1
+			}
+			else
+			{
+				ADS_SEL_Read(dev,channel+5,0,1);  //配置下一通道
+				udelay(100);
+				ADS_SEL_Read(dev,channel+5,0,1);  //配置下一通道
+			} 
+			channel++;
+		}
+		mdelay(100);
+		// printk(" channel1%02d  value:%X \n",channel,value[channel]);
 	}
-	
+	if(channel==5)
+	{
+       printk(" channel1-5 :  %04X %04X %04X %04X %04X\n",value[0],value[1],value[2],value[3],value[4]);
+	}
+	// printk(" miso  value:%X \n",READ_MISO(dev->miso_gpio));
 	return 0;
 }
 /*
@@ -495,23 +603,46 @@ static ssize_t ads1118_read(struct file *filp, int16_t __user *buf, size_t cnt, 
  * @param - offt 	: 相对于文件首地址的偏移
  * @return 			: 读取的字节数，如果为负值，表示读取失败
  */
-static ssize_t ads1118_write(struct file *filp, char __user *buf, size_t cnt, loff_t *off)
+// static ssize_t ads1118_write(struct file *filp, char __user *buf, size_t cnt, loff_t *off)
+// {
+// 	int retvalue;
+// 	unsigned char databuf[1];
+// 	unsigned char ledstat;
+// 	struct gpioled_dev *dev = filp->private_data;
+
+// 	retvalue = copy_from_user(databuf, buf, cnt);
+// 	if(retvalue < 0) {
+// 		printk("kernel write failed!\r\n");
+// 		return -EFAULT;
+// 	}
+
+// 	chipNum = databuf[0];		/* 获取芯片号 */
+// 	printk("ads1118_write chipNum=%d\r\n",chipNum);	
+// 	return 0;
+// }
+
+static void ADS1118_Init(void)	   //ADS1118初始化
 {
-	int retvalue;
-	unsigned char databuf[1];
-	unsigned char ledstat;
-	struct gpioled_dev *dev = filp->private_data;
-
-	retvalue = copy_from_user(databuf, buf, cnt);
-	if(retvalue < 0) {
-		printk("kernel write failed!\r\n");
-		return -EFAULT;
-	}
-
-	chipNum = databuf[0];		/* 获取芯片号 */
-	printk("ads1118_write chipNum=%d\r\n",chipNum);	
-	return 0;
+	uint16_t config = ADS1118_CONFIG_SS_START_OFF |  // 
+                    ADS1118_CONFIG_MODE_CONTIN  |  //连续转换模式 
+                    ADS1118_CONFIG_DR_128SPS   |  // 转换 速率 SPS
+                    ADS1118_CONFIG_TS_MODE_ADC |  // 读取ADC，而不是温度
+                    ADS1118_CONFIG_PULL_UP_ON  |  //上拉电阻启用
+                    ADS1118_CONFIG_NOP_VALID   |  // this is valid data (default)
+					ADS1118_CONFIG_PGA_6_144V  | // FSR is ±6.144 V
+					ADS1118_CONFIG_MUX_SINGLE_0|  //AINP is AIN0 and AINN is GND//单端
+                    ADS1118_CONFIG_RESV;          // reserved bits must be set to 1
+	
+		
+	CS_H(ads1118dev.cs_gpio);
+	// MISO_H(ads->miso_gpio);
+	SCLK_L(ads1118dev.sclk_gpio);
+	MOSI_L(ads1118dev.mosi_gpio);
+	// mutex_init(&ads1118dev.update_lock);
+	Write_ADS1118(&ads1118dev,config,1);//设置ads1118
+	// ads1118_testIO(&ads1118dev);
 }
+
 /*
  * @description		: 关闭/释放设备
  * @param - filp 	: 要关闭的设备文件(文件描述符)
@@ -527,34 +658,9 @@ static const struct file_operations ads1118_ops = {
 	.owner = THIS_MODULE,
 	.open = ads1118_open,
 	.read = ads1118_read,
-	.write = ads1118_write,
+	// .write = ads1118_write,
 	.release = ads1118_release,
 };
-
-/*
- * ads1118内部寄存器初始化函数 
- * @param  	: 无
- * @return 	: 无
- */
-void ads1118_reginit(struct Ads1118_dev *dev)
-{
-   int16_t data[4];
-	uint16_t config = ADS1118_CONFIG_SS_START_OFF |  // 
-                    ADS1118_CONFIG_MODE_CONTIN  |  //连续转换模式 
-                    ADS1118_CONFIG_DR_128SPS   |  // 转换 速率 SPS
-                    ADS1118_CONFIG_TS_MODE_ADC |  // 读取ADC，而不是温度
-                    ADS1118_CONFIG_PULL_UP_ON  |  //上拉电阻启用
-                    ADS1118_CONFIG_NOP_VALID   |  // this is valid data (default)
-										ADS1118_CONFIG_PGA_4_096V  | // FSR is ±4.096 V
-										ADS1118_CONFIG_MUX_SINGLE_0|  //AINP is AIN0 and AINN is GND//单端
-                    ADS1118_CONFIG_RESV;          // reserved bits must be set to 1
-   printk("ads1118_reginit config=%04X !\r\n",config);
-//    ads1118_write_regs(dev,&config,2);
-// 	data[0]=ADS_SEL_Read(dev,4,1,0); 
-// 	printk("ADS_SEL_Read=%04X !\r\n",data[0]);
-   dev->ref=&ads1118_table;
-   ads1118_enable_all(dev);
-}
 
  /*
   * @description     : spi驱动的probe函数，当驱动与
@@ -565,7 +671,7 @@ void ads1118_reginit(struct Ads1118_dev *dev)
   */	
 static int ads1118_probe(struct spi_device *spi)
 {
-	int ret = 0;
+	// int ret = 0;
     printk("ads1118_probe!\r\n");
 	/* 1、构建设备号 */
 	if (ads1118dev.major) {
@@ -600,31 +706,31 @@ static int ads1118_probe(struct spi_device *spi)
 	} 
 
 	/* 2、  */
-	ads1118dev.cs_gpio = of_get_named_gpio(ads1118dev.nd, "cs-gpio", 0);
+	ads1118dev.cs_gpio = of_get_named_gpio(ads1118dev.nd, "cs-gpio_ads1118", 0);
 	if(ads1118dev.cs_gpio < 0) {
-		printk("can't get cs-gpio");
+		printk("can't get cs-gpio_ads1118");
 		return -EINVAL;
 	}
-	ads1118dev.miso_gpio = of_get_named_gpio(ads1118dev.nd, "miso-gpio", 0);
+	ads1118dev.miso_gpio = of_get_named_gpio(ads1118dev.nd, "miso-gpio_ads1118", 0);
 	if(ads1118dev.miso_gpio < 0) {
 		printk("can't get miso_gpio");
 		return -EINVAL;
 	}
-	ads1118dev.mosi_gpio = of_get_named_gpio(ads1118dev.nd, "mosi-gpio", 0);
+	ads1118dev.mosi_gpio = of_get_named_gpio(ads1118dev.nd, "mosi-gpio_ads1118", 0);
 	if(ads1118dev.mosi_gpio < 0) {
 		printk("can't get mosi_gpio");
 		return -EINVAL;
 	}
-	ads1118dev.sclk_gpio = of_get_named_gpio(ads1118dev.nd, "sclk-gpio", 0);
+	ads1118dev.sclk_gpio = of_get_named_gpio(ads1118dev.nd, "sclk-gpio_ads1118", 0);
 	if(ads1118dev.sclk_gpio < 0) {
 		printk("can't get sclk_gpio");
 		return -EINVAL;
 	}
 	/* 3、设置GPIO1_IO20为输出，并且输出高电平 */
 	gpio_direction_output(ads1118dev.cs_gpio, 1);
-	// ret = gpio_direction_output(ads1118dev.mosi_gpio,1);
-	// gpio_direction_output(ads1118dev.miso_gpio,1);
-	// gpio_direction_output(ads1118dev.sclk_gpio, 1);
+	gpio_direction_output(ads1118dev.mosi_gpio,1);
+	gpio_direction_input(ads1118dev.miso_gpio);
+	gpio_direction_output(ads1118dev.sclk_gpio, 1);
 	
 	// ret=gpio_request_one(ads1118dev.device,ads1118dev.sclk_gpio,GPIOF_DIR_OUT);
 	// if(ret != 0) {
@@ -636,14 +742,14 @@ static int ads1118_probe(struct spi_device *spi)
 	printk("ads1118dev.sclk_gpio =%d\r\n", ads1118dev.sclk_gpio);
 	
 	/*初始化spi_device */
-	spi->mode = SPI_MODE_1;	
+	// spi->mode = SPI_MODE_1;	
 	// spi->max_speed_hz=5000;
 	// spi_setup(spi);
 	// printk("max_speed_hz=%d mode=%d\r\n",spi->max_speed_hz,spi->mode);
 	// ads1118dev.private_data = spi; /* 设置私有数据 */
 
 	/* 初始化ads1118内部寄存器 */
-	// ads1118_reginit(& ads1118dev);		
+	ADS1118_Init();//设置ads1118
 	return 0;
 }
 

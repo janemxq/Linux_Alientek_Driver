@@ -4,25 +4,25 @@
 //端口定义
 #define CONFIG_VALUE    0X408B       //AIN0-AIN1  4.096  128sps  pull on DOUT
 
-#define SCLK PCout(12)	//ads1118时钟引脚
-#define MOSI PCout(11)	//ads1118 DIN引脚
-#define CS   PCout(8)	//ads1118 CS引脚
+// #define SCLK PCout(12)	//ads1118时钟引脚
+// #define MOSI PCout(11)	//ads1118 DIN引脚
+// #define CS   PCout(8)	//ads1118 CS引脚
 
-#define MISO PCout(10)	//ads1118 DOUT/DRDY引脚
-#define READ_MISO  PCin(10)
+// #define MISO PCout(10)	//ads1118 DOUT/DRDY引脚
+#define READ_MISO(x) gpio_get_value(x)
 
-#define SCLK_H SCLK=1
-#define SCLK_L SCLK=0
+#define SCLK_H(x) gpio_set_value(x,1)
+#define SCLK_L(x) gpio_set_value(x,0)
 
 /*单片机为主机*/
-#define MOSI_H MOSI=1  //主机出从机入
-#define MOSI_L MOSI=0
+#define MOSI_H(x) gpio_set_value(x,1)  //主机出从机入
+#define MOSI_L(x) gpio_set_value(x,0)
 
-#define MISO_H MISO=1  //主机入从机出
-#define MISO_L MISO=0
+// #define MISO_H MISO=1  //主机入从机出
+// #define MISO_L MISO=0
 
-#define   CS_H   CS=1
-#define   CS_L   CS=0
+#define   CS_H(x)    gpio_set_value(x,1)
+#define   CS_L(x)    gpio_set_value(x,0)
 
 //单次转换开始
 #define ADS1118_CONFIG_SS_START_MASK 0x8000
