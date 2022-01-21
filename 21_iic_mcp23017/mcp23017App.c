@@ -22,7 +22,15 @@ Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 论坛 	   	: www.openedv.com
 日志	   	: 初版V1.0 2019/9/20 左忠凯创建
 ***************************************************************/
-
+void print_bin(unsigned char n)
+{
+    int i;
+    for(i=7; i>=0; i --)
+    {
+        if(n&(1<<i))printf("1");
+        else printf("0");
+    }
+}
 /*
  * @description		: main主程序
  * @param - argc 	: argv数组元素个数
@@ -52,13 +60,19 @@ int main(int argc, char *argv[])
 		printf("open file %s successs!!!\r\n", filename);
 	}
     // databuf[0] = atoi(argv[2]);	/* 要执行的操作：打开或关闭 */
+	ir = 0xAA;
 	while (1) {
 		ret = read(fd, databuf, sizeof(databuf));
 		if(ret == 0) { 			/* 数据读取成功 */
-			write(fd,&databuf[0],1);//把A狀態寫到B
-			printf("IOA = %x IOB = %x\r\n",  databuf[0], databuf[1]);
+		    // ir = 0xff;
+		    ir =~ir;
+			write(fd,&ir,1);
+			
+			printf("IOA(输出) = %x  IOB(输入) =",  databuf[0]);
+			print_bin(databuf[1]);
+			printf("\r\n");
 		}
-		usleep(2000000); /*延时 1000ms */
+		usleep(200000); /*延时 1000ms */
 	}
 	close(fd);	/* 关闭文件 */	
 	return 0;

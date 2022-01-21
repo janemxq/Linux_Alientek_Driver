@@ -348,7 +348,8 @@ static int mcp23017_open(struct inode *inode, struct file *filp)
     //所有端口使能上拉电阻,低电平输入有效，可以在端口上接按键实验
 	MCP23017_IO_PU(&mcp23017dev,MCP23017_PORTA,ALLPIN,ENABLE);
 	MCP23017_IO_PU(&mcp23017dev,MCP23017_PORTB,ALLPIN,ENABLE);
-	MCP23017_IO_DIR(&mcp23017dev,MCP23017_PORTB,ALLPIN,OUTPUT);
+	MCP23017_IO_DIR(&mcp23017dev,MCP23017_PORTA,ALLPIN,OUTPUT);
+	MCP23017_IO_DIR(&mcp23017dev,MCP23017_PORTB,ALLPIN,INPUT);
 	return 0;
 }
 
@@ -393,8 +394,8 @@ static ssize_t mcp23017_write(struct file *filp, char __user *buf, size_t cnt, l
 		printk("kernel write failed!\r\n");
 		return -EFAULT;
 	}
-	printk("mcp23017_write data[0]=%x \r\n",data[0]);
-	MCP23017_WRITE_GPIO(dev,MCP23017_PORTB,data[0]);
+	printk("mcp23017_write PORTA data=%x \r\n",data[0]);
+	MCP23017_WRITE_GPIO(dev,MCP23017_PORTA,data[0]);
 	return 0;
 }
 /*

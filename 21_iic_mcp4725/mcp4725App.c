@@ -33,13 +33,13 @@ int main(int argc, char *argv[])
 {
 	int fd;
 	char *filename;
-	unsigned char databuf[2];
+	unsigned char databuf[3];
 	unsigned char ir, als, ps;
 	int ret = 0;
 	
 
-	if (argc != 3) {
-		printf("Error Usage! 需要输入电压值，0-4096 对应 0-3.3v \r\n");
+	if (argc != 4) {
+		printf("Error Usage! 需要输入地址 1:0x60 2:0x61 电压值，0-4096 对应 0-3.3v \r\n");
 		return -1;
 	}
 
@@ -52,14 +52,15 @@ int main(int argc, char *argv[])
 		printf("open file %s successs!!!\r\n", filename);
 	}
 	// 3.266v 到达4088已经到达满量程。
-    databuf[1] = atoi(argv[2])>>8;	/* 输入电压值，0-4095 对应 0-3.3v*/
-    databuf[0] = atoi(argv[2])&0xFF;	/* 输入电压值，0-4095 对应 0-3.3v*/
+	databuf[0]=atoi(argv[2]);  //芯片地址 
+    databuf[2] = atoi(argv[3])>>8;	/* 输入电压值，0-4095 对应 0-3.3v*/
+    databuf[1] = atoi(argv[3])&0xFF;	/* 输入电压值，0-4095 对应 0-3.3v*/
+	ret = write(fd, databuf, 3);
 	while (1) {
-		ret = write(fd, databuf, 2);
-		// if(ret == 0) { 			/* 数据读取成功 */
-			// write(fd,&databuf[0],1);//把A狀態寫到B
-			// printf("MCP4725 返回值=%04X\r\n",ret);
-		// }
+		ret = read(fd, databuf, 2);
+		if(ret == 0) { 			/* 数据读取成功 */
+			printf("MCP4725 返回值=%04X\r\n",ret);
+		}
 		sleep(2); /*延时 2000ms */
 	}
 	close(fd);	/* 关闭文件 */	

@@ -39,7 +39,8 @@ struct mcp4725_dev {
 	void *private_data;	/* 私有数据 */
 	unsigned short ir, als, ps;		/* 三个光传感器数据 */
 };
-
+static u8  chipAddress[2]={0x60,0x61};
+static u8  currentAdd=1;//当前地址 
 static struct mcp4725_dev mcp4725dev;
 /*
  * @description	: 从mcp4725读取多个寄存器数据
@@ -58,7 +59,7 @@ static int mcp4725_read_regs(struct mcp4725_dev *dev, MCP4725_READ_TYPE dataType
 	struct i2c_client *client = (struct i2c_client *)dev->private_data;
     // printk("mcp4725_read_regs addr =%d \n",client->addr);
 	/* msg[0]为发送要读取的首地址 */
-	msg[0].addr = client->addr;			/* mcp4725地址 */
+	msg[0].addr = chipAddress[currentAdd-1];			/* mcp4725地址 */
 	msg[0].flags = 0;					/* 标记为发送数据 */
 	msg[0].buf =buffer;					/* 读取的首地址 */
 	msg[0].len = dataType;						/* reg长度*/
@@ -70,6 +71,7 @@ static int mcp4725_read_regs(struct mcp4725_dev *dev, MCP4725_READ_TYPE dataType
 	// msg[1].len = 5;					   /* 要读取的数据长度,按最长的读*/
 
 	// ret = i2c_transfer(client->adapter, msg, 1);
+	client->addr=chipAddress[currentAdd-1];
 	ret=i2c_master_recv(client,buffer,dataType);
 	if (ret < 0)
 		return ret;
@@ -120,6 +122,7 @@ uint8_t MCP4725_getEepromBusyFlag(struct mcp4725_dev *dev)
 /*
  * @description	: 向mcp4725多个寄存器写入数据
  * @param - dev:  mcp4725设备
+ * @param - chipAddress:  mcp4725设备地址 1：0x60  2:0x61
  * @param - reg:  要写入的寄存器首地址
  * @param - val:  要写入的数据缓冲区
  * @param - len:  要写入的数据长度
@@ -131,7 +134,7 @@ static s32 mcp4725_write_regs(struct mcp4725_dev *dev, uint16_t value, MCP4725_C
 	int ret;
 	struct i2c_msg msg;
 	struct i2c_client *client = (struct i2c_client *)dev->private_data;
-	printk("mcp4725_write_regs addr =%x \n",client->addr);
+	printk("mcp4725_write_regs addr =%x value=%x\n",chipAddress[currentAdd-1],value);
 	
 	// b[0] = reg;					/* 寄存器首地址 */
 	// memcpy(&b[1],buf,len);		/* 将要写入的数据拷贝到数组b里面 */
@@ -147,12 +150,13 @@ static s32 mcp4725_write_regs(struct mcp4725_dev *dev, uint16_t value, MCP4725_C
 			b[0] = mode | (powerType << 4)  | highByte(value);
 			b[1] = lowByte(value);
 				
-			msg.addr = client->addr;	/* mcp4725地址 */
+			msg.addr = chipAddress[currentAdd-1];	/* mcp4725地址 */
 			msg.flags = 0;				/* 标记为写数据 */
 
 			msg.buf = b;				/* 要写入的数据缓冲区 */
 			msg.len = 2;			/* 要写入的数据长度 */
 			ret=i2c_transfer(client->adapter, &msg, 1);
+			printk("client->addr=%02x，b[0]=%02x b[1]=%02x ret =%04X\r\n",chipAddress[currentAdd-1],b[0],b[1],ret);
 			break;
 
 		case MCP4725_REGISTER_MODE: case MCP4725_EEPROM_MODE:              //see MCP4725 datasheet on p.19
@@ -161,15 +165,16 @@ static s32 mcp4725_write_regs(struct mcp4725_dev *dev, uint16_t value, MCP4725_C
 			b[1] = highByte(value);
 			b[2] = lowByte(value);
 		
-			msg.addr = client->addr;	/* mcp4725地址 */
+			msg.addr = chipAddress[currentAdd-1];	/* mcp4725地址 */
 			msg.flags = 0;				/* 标记为写数据 */
 
 			msg.buf = b;				/* 要写入的数据缓冲区 */
 			msg.len = 3;			/* 要写入的数据长度 */
 			ret=i2c_transfer(client->adapter, &msg, 1);
+			printk("client->addr=%02x，b[0]=%02x b[1]=%02x b[2]=%02x ret =%04X\r\n",chipAddress[currentAdd-1],b[0],b[1],b[2],ret);
 			break;
 	}
-	printk("client->addr=%02x，b[0]=%02x b[1]=%02x ret =%04X\r\n",client->addr,b[0],b[1],ret);
+	
 	if(ret <=0 )return 0;
 	if (mode == MCP4725_EEPROM_MODE)
 	{
@@ -293,8 +298,8 @@ static ssize_t mcp4725_read(struct file *filp, char __user *buf, size_t cnt, lof
 	// u8 data[2];
 	// long err = 0;
 	struct mcp4725_dev *dev = (struct mcp4725_dev *)filp->private_data;
-	 mcp4725_write_regs(dev,0x7ff, MCP4725_FAST_MODE, MCP4725_POWER_DOWN_OFF);
-	return mcp4725_read_regs(dev,MCP4725_READ_DAC_REG);
+	//  mcp4725_write_regs(dev,0x7ff, MCP4725_FAST_MODE, MCP4725_POWER_DOWN_OFF);
+	return mcp4725_read_regs(dev,MCP4725_READ_EEPROM);
 }
 /*
  * @description		: 往设备写入数据 
@@ -309,6 +314,7 @@ static ssize_t mcp4725_write(struct file *filp, char __user *buf, size_t cnt, lo
 	int retvalue;
 	char data[10];
     retvalue= copy_from_user(data, buf, cnt);
+	currentAdd=data[0];
 	struct mcp4725_dev *dev = (struct mcp4725_dev *)filp->private_data;
 
 	 if(retvalue < 0) 
@@ -316,8 +322,8 @@ static ssize_t mcp4725_write(struct file *filp, char __user *buf, size_t cnt, lo
 		printk("kernel write failed!\r\n");
 		return -EFAULT;
 	}
-	printk("mcp4725_write data[0]=%x data[1]=%x cnt=%x\r\n",data[0],data[1],cnt);
-    return mcp4725_write_regs(dev, (data[1]<<8)+data[0], MCP4725_FAST_MODE, MCP4725_POWER_DOWN_OFF);
+	printk("mcp4725_write address=%x  data[0]=%x data[1]=%x cnt=%x\r\n",data[0],data[1],data[2],cnt);
+    return mcp4725_write_regs(dev, (data[2]<<8)+data[1], MCP4725_EEPROM_MODE, MCP4725_POWER_DOWN_OFF);
 }
 /*
  * @description		: 关闭/释放设备
@@ -397,12 +403,14 @@ static int mcp4725_remove(struct i2c_client *client)
 /* 传统匹配方式ID列表 */
 static const struct i2c_device_id mcp4725_id[] = {
 	{"alientek,mcp4725", 0},  
+	// {"alientek,mcp4725B", 1},  
 	{}
 };
 
 /* 设备树匹配列表 */
 static const struct of_device_id mcp4725_of_match[] = {
 	{ .compatible = "alientek,mcp4725" },
+	// { .compatible = "alientek,mcp4725B" }
 	{ /* Sentinel */ }
 };
 
