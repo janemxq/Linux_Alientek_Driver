@@ -12,19 +12,22 @@
 #include <signal.h>
 #include <fcntl.h>
 #include   <time.h>
-
+#include "ads1118reg.h"
 
 #define   IS_128
 #define   AD7799_GAIN  128					//如果增益为64倍,则这里改为64
 
 #define   AD7799_RefmV    3300				//基准电压 3300mV	
 
-
+float analyzeAD1118_mv(long data)
+{
+	return data*ADS1118_CONST_6_144V_LSB_mV;//
+}
 int main(int argc, char *argv[])
 {
 	int fd,fd_rec;
 	char *filename;
-	int16_t databuf[4];//必须和驱动里面read函数的类型保持一致，不然会卡死!!!!
+	int16_t databuf[5];//必须和驱动里面read函数的类型保持一致，不然会卡死!!!!
 	unsigned char recbuf[256];
 	struct tm *t;
     time_t tt;
@@ -33,8 +36,8 @@ int main(int argc, char *argv[])
 	signed int gyro_x_adc, gyro_y_adc, gyro_z_adc;
 	signed int accel_x_adc, accel_y_adc, accel_z_adc;
 	signed int temp_adc;
-    long lADValue[3];
-	double ADValues[3];
+    long lADValue[4];
+	float ADValues[5];
 	float gyro_x_act, gyro_y_act, gyro_z_act;
 	float accel_x_act, accel_y_act, accel_z_act;
 	float temp_act;
@@ -64,27 +67,23 @@ int main(int argc, char *argv[])
 			//先把访问的芯片号告诉驱动
 			// ret = write(fd, &chip, 1);
 			ret = read(fd, databuf, sizeof(databuf));
-			// if(ret == 0) { 			/* 数据读取成功 */
-			// 	for(ch=0;ch<2;ch++)
-			// 	{
-			// 		lADValue[ch]=0;
-			// 		lADValue[ch] += (databuf[3*ch] << 16);
-			// 		lADValue[ch] += (databuf[3*ch+1] << 8);
-			// 		lADValue[ch] += (databuf[3*ch+2] << 0);
-			// 		ADValues[ch]=analyzeAD7799_g(lADValue[ch]);
-			// 		// printf("ch=%d data: %02X %02X %02X\r\n",ch,databuf[3*ch] ,databuf[3*ch+1],databuf[3*ch+2]);
-			// 	}
-			// 	time(&tt);
-            //     t = localtime(&tt);		
-			// 	sprintf(recbuf,"[%4d年%02d月%02d日 %02d:%02d:%02d] 通道1 = %06X  %0.2f mv, 通道2 = %06X  %0.2f mv config=%04X mode=%04X\r\n",  
-			// 	 t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec,
-			// 	 lADValue[0], ADValues[0] , lADValue[1], ADValues[1],(databuf[7]<<8)+databuf[6],(databuf[9]<<8)+databuf[8]);
-			// 	printf(recbuf);
+			if(ret == 0) { 			/* 数据读取成功 */
+				for(ch=0;ch<4;ch++)
+				{
+					ADValues[ch]=analyzeAD1118_mv(databuf[ch]);
+				}
+				ADValues[4]=databuf[4]*0.03125;
+				time(&tt);
+                t = localtime(&tt);		
+				sprintf(recbuf,"[%4d年%02d月%02d日 %02d:%02d:%02d] 通道1 = %0.2f mv, 通道2 = %0.2f mv 通道3 = %0.2f mv, 通道4 = %0.2f mv 温度 = %0.2f\r\n",  
+				 t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec,
+				 ADValues[0], ADValues[1] , ADValues[2], ADValues[3],ADValues[4]);
+				printf(recbuf);
 			// 	// write(fd_rec, recbuf, strlen(recbuf));
 			// 	// printf("通道1 = %06d 克, 通道2= %06d 克\r\n", ADValues[0], ADValues[1]);
 			// 	// usleep(100000); /*100ms */
 			// 	sleep(1);/*1s*/
-		    // }
+		    }
 			sleep(1);/*1s*/
 		}
 	}

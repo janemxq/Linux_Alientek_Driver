@@ -43,7 +43,7 @@ struct ad7799_dev {
 	struct device_node	*nd; 	/* 设备节点 */
 	int major;					/* 主设备号 */
 	void *private_data;			/* 私有数据 		*/
-	int cs_gpio;				/* 片选所使用的GPIO编号		*/
+	int cs_gpio[4];				/* 片选所使用的GPIO编号		*/
 	int sclk_gpio;				/* 片选所使用的GPIO编号		*/
 	int mosi_gpio;				/* 片选所使用的GPIO编号		*/
 	int miso_gpio;				/* 片选所使用的GPIO编号		*/
@@ -110,7 +110,7 @@ static int ad7799_read_regs(struct ad7799_dev *dev, u8 reg, void *buf, int len)
 	struct spi_transfer *t;
 	struct spi_device *spi = (struct spi_device *)dev->private_data;
 
-	gpio_set_value(dev->cs_gpio, 0);				/* 片选拉低，选中ad7799 */
+	gpio_set_value(dev->cs_gpio[chipNum], 0);				/* 片选拉低，选中ad7799 */
 	t = kzalloc(sizeof(struct spi_transfer), GFP_KERNEL);	/* 申请内存 */
 
 	/* 第1次，发送要读取的寄存地址 */
@@ -130,7 +130,7 @@ static int ad7799_read_regs(struct ad7799_dev *dev, u8 reg, void *buf, int len)
 	ret = spi_sync(spi, &m);	/* 同步发送 */
 
 	kfree(t);									/* 释放内存 */
-	gpio_set_value(dev->cs_gpio, 1);			/* 片选拉高，释放ad7799 */
+	gpio_set_value(dev->cs_gpio[chipNum], 1);			/* 片选拉高，释放ad7799 */
 
 	return ret;
 }
@@ -188,7 +188,7 @@ static s32 ad7799_write_regs(struct ad7799_dev *dev, u8 reg, u8 *buf, u8 len)
 	struct spi_device *spi = (struct spi_device *)dev->private_data;
 
 	t = kzalloc(sizeof(struct spi_transfer), GFP_KERNEL);	/* 申请内存 */
-	gpio_set_value(dev->cs_gpio, 0);			/* 片选拉低 */
+	gpio_set_value(dev->cs_gpio[chipNum], 0);			/* 片选拉低 */
 
 	/* 第1次，发送要读取的寄存地址 */
 	txdata[0] = AD7799_COMM_WRITE |  AD7799_COMM_ADDR(reg);	/* 写数据的时候寄存器地址bit8要清零 */
@@ -206,7 +206,7 @@ static s32 ad7799_write_regs(struct ad7799_dev *dev, u8 reg, u8 *buf, u8 len)
 	ret = spi_sync(spi, &m);	/* 同步发送 */
 
 	kfree(t);					/* 释放内存 */
-	gpio_set_value(dev->cs_gpio, 1);/* 片选拉高，释放ad7799 */
+	gpio_set_value(dev->cs_gpio[chipNum], 1);/* 片选拉高，释放ad7799 */
 	return ret;
 }
 /***************************************************************************//**
@@ -283,7 +283,7 @@ void AD7799_Reset(struct ad7799_dev *ad7799) {
 
 	t = kzalloc(sizeof(struct spi_transfer), GFP_KERNEL);	/* 申请内存 */
 	uint8_t dataToSend[4] = { 0xff, 0xff, 0xff, 0xff };
-	gpio_set_value(ad7799->cs_gpio, 0);			/* 片选拉低 */
+	gpio_set_value(ad7799->cs_gpio[chipNum], 0);			/* 片选拉低 */
 	t->tx_buf = dataToSend;			/* 要发送的数据 */
 	t->len = 4;					/* 1个字节 */
 	spi_message_init(&m);		/* 初始化spi_message */
@@ -291,7 +291,7 @@ void AD7799_Reset(struct ad7799_dev *ad7799) {
 	ret = spi_sync(spi, &m);	/* 同步发送 */
 	// ret=spi_write(spi, dataToSend, 4);
 	printk("reset ret=%d\n",ret);
-     gpio_set_value(ad7799->cs_gpio, 1);			/* 片选拉高 */
+     gpio_set_value(ad7799->cs_gpio[chipNum], 1);			/* 片选拉高 */
 	kfree(t);					/* 释放内存 */
 
 	
@@ -553,11 +553,12 @@ static const struct file_operations ad7799_ops = {
  * @param  	: 无
  * @return 	: 无
  */
-void ad7799_reginit(void)
+void ad7799_reginit(u8 chip)
 {
 	u8 ID=-1;
 	int uiTimeout=10;
 	int uiTimeout2=10;
+	chipNum=chip;
 	AD7799_Reset(&ad7799dev);
 	mdelay(1);
 	while( (ID& 0x0F) != AD7799_ID)
@@ -585,7 +586,12 @@ void ad7799_reginit(void)
 	// 	printk("ad7799dev.miso_gpio value=%02X\r\n",gpio_get_value(ad7799dev.miso_gpio));
 	// 	mdelay(1000);
 	// }
-	printk("ad7799 ID %02X \r\n", ID);
+	if((ID& 0x0F) == AD7799_ID)
+	{
+       printk("ad7799 芯片号:%02d ID %02X 已经找到芯片！！！！ \r\n",chipNum, ID);
+	}else{
+	   printk("ad7799 芯片号:%02d ID %02X 芯片通讯异常！！！！ \r\n",chipNum, ID);
+	}
 	// u8 value = 0;
 	
 	 AD7799_Reset(&ad7799dev);
@@ -617,6 +623,7 @@ void ad7799_reginit(void)
 static int ad7799_probe(struct spi_device *spi)
 {
 	int ret = 0;
+	u8 uchip=0;
 printk("ad7799_probe!\r\n");
 	/* 1、构建设备号 */
 	if (ad7799dev.major) {
@@ -651,9 +658,24 @@ printk("ad7799_probe!\r\n");
 	} 
 
 	/* 2、  */
-	ad7799dev.cs_gpio = of_get_named_gpio(ad7799dev.nd, "cs-gpio_ad7799_1", 0);
-	if(ad7799dev.cs_gpio < 0) {
+	ad7799dev.cs_gpio[0] = of_get_named_gpio(ad7799dev.nd, "cs-gpio_ad7799_1", 0);
+	ad7799dev.cs_gpio[1] = of_get_named_gpio(ad7799dev.nd, "cs-gpio_ad7799_2", 0);
+	ad7799dev.cs_gpio[2] = of_get_named_gpio(ad7799dev.nd, "cs-gpio_ad7799_3", 0);
+	ad7799dev.cs_gpio[3] = of_get_named_gpio(ad7799dev.nd, "cs-gpio_ad7799_4", 0);
+	if(ad7799dev.cs_gpio[0] < 0) {
 		printk("can't get cs-gpio_ad7799_1");
+		return -EINVAL;
+	}
+	if(ad7799dev.cs_gpio[1] < 0) {
+		printk("can't get cs-gpio_ad7799_2");
+		return -EINVAL;
+	}
+	if(ad7799dev.cs_gpio[2] < 0) {
+		printk("can't get cs-gpio_ad7799_3");
+		return -EINVAL;
+	}
+	if(ad7799dev.cs_gpio[3] < 0) {
+		printk("can't get cs-gpio_ad7799_4");
 		return -EINVAL;
 	}
     //  ad7799dev.sclk_gpio = of_get_named_gpio(ad7799dev.nd, "sclk-gpio", 0);
@@ -671,14 +693,17 @@ printk("ad7799_probe!\r\n");
 	// 	return -EINVAL;
 	// }
 	/* 3、设置GPIO1_IO20为输出，并且输出高电平 */
-	gpio_direction_output(ad7799dev.cs_gpio, 1);
+	gpio_direction_output(ad7799dev.cs_gpio[0], 1);
+	gpio_direction_output(ad7799dev.cs_gpio[1], 1);
+	gpio_direction_output(ad7799dev.cs_gpio[2], 1);
+	gpio_direction_output(ad7799dev.cs_gpio[3], 1);
 	// ret = gpio_direction_output(ad7799dev.mosi_gpio,1);
 	// gpio_direction_output(ad7799dev.miso_gpio,1);
 	// gpio_direction_output(ad7799dev.sclk_gpio, 1);
 	if(ret != 0) {
 		printk("can't set gpio! ret=%d\n", ret);
 	}
-	printk("ad7799dev.cs_gpio =%d\r\n", ad7799dev.cs_gpio);
+	printk("ad7799dev.cs_gpio[0] =%d [1] =%d [2] =%d [3] =%d\r\n", ad7799dev.cs_gpio[0],ad7799dev.cs_gpio[1],ad7799dev.cs_gpio[2],ad7799dev.cs_gpio[3]);
 	printk("ad7799dev.mosi_gpio =%d\r\n", ad7799dev.mosi_gpio);
 	printk("ad7799dev.miso_gpio =%d\r\n", ad7799dev.miso_gpio);
 	printk("ad7799dev.sclk_gpio =%d\r\n", ad7799dev.sclk_gpio);
@@ -691,7 +716,9 @@ printk("ad7799_probe!\r\n");
 	ad7799dev.private_data = spi; /* 设置私有数据 */
 
 	/* 初始化ad7799内部寄存器 */
-	ad7799_reginit();		
+	for(uchip=0;uchip<4;uchip++){
+	ad7799_reginit(uchip);		
+	}
 	return 0;
 }
 

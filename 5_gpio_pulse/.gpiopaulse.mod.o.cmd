@@ -1,8 +1,8 @@
-cmd_/home/alientek/2、Linux驱动例程/21_iic_mcp23017/mcp23017.mod.o := arm-linux-gnueabihf-gcc -Wp,-MD,/home/alientek/2、Linux驱动例程/21_iic_mcp23017/.mcp23017.mod.o.d  -nostdinc -isystem /usr/local/arm/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/4.9.4/include -I./arch/arm/include -Iarch/arm/include/generated/uapi -Iarch/arm/include/generated  -Iinclude -I./arch/arm/include/uapi -Iarch/arm/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-dwarf2-cfi-asm -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -fno-delete-null-pointer-checks -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -fomit-frame-pointer -fno-var-tracking-assignments -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(mcp23017.mod)"  -D"KBUILD_MODNAME=KBUILD_STR(mcp23017)" -DMODULE  -c -o /home/alientek/2、Linux驱动例程/21_iic_mcp23017/mcp23017.mod.o /home/alientek/2、Linux驱动例程/21_iic_mcp23017/mcp23017.mod.c
+cmd_/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o := arm-linux-gnueabihf-gcc -Wp,-MD,/home/alientek/2、Linux驱动例程/5_gpio_paulse/.gpiopaulse.mod.o.d  -nostdinc -isystem /usr/local/arm/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/4.9.4/include -I./arch/arm/include -Iarch/arm/include/generated/uapi -Iarch/arm/include/generated  -Iinclude -I./arch/arm/include/uapi -Iarch/arm/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-dwarf2-cfi-asm -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -fno-delete-null-pointer-checks -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -fomit-frame-pointer -fno-var-tracking-assignments -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(gpiopaulse.mod)"  -D"KBUILD_MODNAME=KBUILD_STR(gpiopaulse)" -DMODULE  -c -o /home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o /home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.c
 
-source_/home/alientek/2、Linux驱动例程/21_iic_mcp23017/mcp23017.mod.o := /home/alientek/2、Linux驱动例程/21_iic_mcp23017/mcp23017.mod.c
+source_/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o := /home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.c
 
-deps_/home/alientek/2、Linux驱动例程/21_iic_mcp23017/mcp23017.mod.o := \
+deps_/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o := \
     $(wildcard include/config/module/unload.h) \
   include/linux/module.h \
     $(wildcard include/config/sysfs.h) \
@@ -434,6 +434,6 @@ deps_/home/alientek/2、Linux驱动例程/21_iic_mcp23017/mcp23017.mod.o := \
   include/linux/vermagic.h \
   include/generated/utsrelease.h \
 
-/home/alientek/2、Linux驱动例程/21_iic_mcp23017/mcp23017.mod.o: $(deps_/home/alientek/2、Linux驱动例程/21_iic_mcp23017/mcp23017.mod.o)
+/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o: $(deps_/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o)
 
-$(deps_/home/alientek/2、Linux驱动例程/21_iic_mcp23017/mcp23017.mod.o):
+$(deps_/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o):

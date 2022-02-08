@@ -583,14 +583,17 @@ static ssize_t ads1118_read(struct file *filp, int16_t __user *buf, size_t cnt, 
 				udelay(100);
 				ADS_SEL_Read(dev,channel+5,0,1);  //配置下一通道
 			} 
+			// printk(" channel1%02d  value:%X \n",channel,value[channel]);
 			channel++;
 		}
-		mdelay(100);
+		
+		mdelay(200);
 		// printk(" channel1%02d  value:%X \n",channel,value[channel]);
 	}
 	if(channel==5)
 	{
        printk(" channel1-5 :  %04X %04X %04X %04X %04X\n",value[0],value[1],value[2],value[3],value[4]);
+	   copy_to_user(buf, value, sizeof(value));
 	}
 	// printk(" miso  value:%X \n",READ_MISO(dev->miso_gpio));
 	return 0;
@@ -631,6 +634,9 @@ static void ADS1118_Init(void)	   //ADS1118初始化
                     ADS1118_CONFIG_NOP_VALID   |  // this is valid data (default)
 					ADS1118_CONFIG_PGA_6_144V  | // FSR is ±6.144 V
 					ADS1118_CONFIG_MUX_SINGLE_0|  //AINP is AIN0 and AINN is GND//单端
+					ADS1118_CONFIG_MUX_SINGLE_1|  //AINP is AIN0 and AINN is GND//单端
+					ADS1118_CONFIG_MUX_SINGLE_2|  //AINP is AIN0 and AINN is GND//单端
+					ADS1118_CONFIG_MUX_SINGLE_3|  //AINP is AIN0 and AINN is GND//单端
                     ADS1118_CONFIG_RESV;          // reserved bits must be set to 1
 	
 		

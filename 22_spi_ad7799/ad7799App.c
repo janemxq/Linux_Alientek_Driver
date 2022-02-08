@@ -122,25 +122,26 @@ int main(int argc, char *argv[])
     char chip=0;
 	int ret = 0;
     int ch=0;
-	if (argc != 2) {
-		printf("Error Usage!\r\n");
+	if (argc != 3) {
+		printf("Error Usage! 需要输入芯片号(从0开始，0.1.2.3) \r\n");
 		return -1;
 	}
 
 	filename = argv[1];
-	fd_rec=open("/run/media/mmcblk0p2/scale_rec.txt",O_CREAT|O_RDWR);
-	if(fd_rec<0)
-	{
-		printf("can't open file %s\r\n", "/run/media/mmcblk0p2/scale_rec.txt");
-		return -1;
-	}
+	chip=atoi(argv[2]);
+	// fd_rec=open("/run/media/mmcblk0p2/scale_rec.txt",O_CREAT|O_RDWR);
+	// if(fd_rec<0)
+	// {
+	// 	printf("can't open file %s\r\n", "/run/media/mmcblk0p2/scale_rec.txt");
+	// 	return -1;
+	// }
 	fd = open(filename, O_RDWR);
 	if(fd < 0) {
 		printf("can't open file %s\r\n", filename);
 		return -1;
 	}
 	while (1) {
-		for(chip=0;chip<1;chip++)
+		// for(chip=0;chip<1;chip++)
 		{
 			//先把访问的芯片号告诉驱动
 			ret = write(fd, &chip, 1);
@@ -159,9 +160,9 @@ int main(int argc, char *argv[])
                 t = localtime(&tt);		
 				sprintf(recbuf,"[%4d年%02d月%02d日 %02d:%02d:%02d] 通道1 = %06X  %0.2f 克, 通道2 = %06X  %0.2f 克 config=%04X mode=%04X\r\n",  
 				 t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec,
-				 lADValue[0], ADValues[0] , lADValue[1], ADValues[1],(databuf[7]<<8)+databuf[6],(databuf[9]<<8)+databuf[8]);
+				 lADValue[1], ADValues[1] , lADValue[0], ADValues[0],(databuf[7]<<8)+databuf[6],(databuf[9]<<8)+databuf[8]);
 				printf(recbuf);
-				write(fd_rec, recbuf, strlen(recbuf));
+				// write(fd_rec, recbuf, strlen(recbuf));
 				// printf("通道1 = %06d 克, 通道2= %06d 克\r\n", ADValues[0], ADValues[1]);
 				// usleep(100000); /*100ms */
 				sleep(1);/*1s*/

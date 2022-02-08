@@ -18,25 +18,24 @@ static const struct modversion_info ____versions[]
 __used
 __attribute__((section("__versions"))) = {
 	{ 0xfa985410, __VMLINUX_SYMBOL_STR(module_layout) },
-	{ 0xab5c8cb5, __VMLINUX_SYMBOL_STR(i2c_del_driver) },
-	{ 0x19bdcb34, __VMLINUX_SYMBOL_STR(i2c_register_driver) },
-	{ 0xfa2a45e, __VMLINUX_SYMBOL_STR(__memzero) },
-	{ 0xfbc74f64, __VMLINUX_SYMBOL_STR(__copy_from_user) },
-	{ 0xf9a482f9, __VMLINUX_SYMBOL_STR(msleep) },
-	{ 0x243f207d, __VMLINUX_SYMBOL_STR(i2c_transfer) },
-	{ 0x2e5810c6, __VMLINUX_SYMBOL_STR(__aeabi_unwind_cpp_pr1) },
-	{ 0x29537c9e, __VMLINUX_SYMBOL_STR(alloc_chrdev_region) },
-	{ 0xbce370d, __VMLINUX_SYMBOL_STR(device_create) },
-	{ 0x3c8c7d13, __VMLINUX_SYMBOL_STR(__class_create) },
-	{ 0xfeb25d8b, __VMLINUX_SYMBOL_STR(cdev_add) },
-	{ 0xb6828306, __VMLINUX_SYMBOL_STR(cdev_init) },
-	{ 0xd8e484f0, __VMLINUX_SYMBOL_STR(register_chrdev_region) },
 	{ 0x495be299, __VMLINUX_SYMBOL_STR(class_destroy) },
 	{ 0x4d0abe31, __VMLINUX_SYMBOL_STR(device_destroy) },
 	{ 0x7485e15e, __VMLINUX_SYMBOL_STR(unregister_chrdev_region) },
 	{ 0xb37da9a1, __VMLINUX_SYMBOL_STR(cdev_del) },
+	{ 0xbce370d, __VMLINUX_SYMBOL_STR(device_create) },
+	{ 0x3c8c7d13, __VMLINUX_SYMBOL_STR(__class_create) },
+	{ 0xfeb25d8b, __VMLINUX_SYMBOL_STR(cdev_add) },
+	{ 0xb6828306, __VMLINUX_SYMBOL_STR(cdev_init) },
+	{ 0x29537c9e, __VMLINUX_SYMBOL_STR(alloc_chrdev_region) },
+	{ 0xd8e484f0, __VMLINUX_SYMBOL_STR(register_chrdev_region) },
+	{ 0xc61ff1f2, __VMLINUX_SYMBOL_STR(gpiod_direction_output_raw) },
+	{ 0xde6fb46c, __VMLINUX_SYMBOL_STR(of_get_named_gpio_flags) },
+	{ 0xfbed6f8c, __VMLINUX_SYMBOL_STR(of_find_node_opts_by_path) },
+	{ 0xfa2a45e, __VMLINUX_SYMBOL_STR(__memzero) },
 	{ 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) },
-	{ 0x38344cab, __VMLINUX_SYMBOL_STR(i2c_master_recv) },
+	{ 0xfbc74f64, __VMLINUX_SYMBOL_STR(__copy_from_user) },
+	{ 0x389329b3, __VMLINUX_SYMBOL_STR(gpiod_set_raw_value) },
+	{ 0x3089e8ae, __VMLINUX_SYMBOL_STR(gpio_to_desc) },
 	{ 0xefd6cf06, __VMLINUX_SYMBOL_STR(__aeabi_unwind_cpp_pr0) },
 };
 
@@ -46,4 +45,4 @@ __attribute__((section(".modinfo"))) =
 "depends=";
 
 
-MODULE_INFO(srcversion, "4176A80E4569FC30D9B1CEE");
+MODULE_INFO(srcversion, "C5E2E034D59E8BB185664FD");
