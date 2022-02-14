@@ -60,11 +60,11 @@ int main(int argc, char *argv[])
 	// 		return -1;
 	// 	}
 	// 	value[0]=~value[0];
-	// 	usleep(databuf[0]*500);
-	// 	// sleep(databuf[0]);
+	// 	// usleep(databuf[0]*500);
+	// 	sleep(databuf[0]);
 	// }
 	
-    ///测试开关
+    ///测试脉冲输出开关
 	 write(fd, databuf, sizeof(databuf));
 
 
