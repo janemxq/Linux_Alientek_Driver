@@ -38,7 +38,7 @@ int main() {
 
   // open device on /dev/i2c-1 
   // the default on Raspberry Pi B
-  if ((fd = open("/dev/i2c-1", O_RDWR)) < 0) {
+  if ((fd = open("/dev/i2c-0", O_RDWR)) < 0) {
     printf("Error: Couldn't open device! %d\n", fd);
     exit (1);
   }
