@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
 	char *filename;
 	unsigned char databuf[1];
 	unsigned char value[1];
+	int i=0;
 	
 	if(argc != 3){
 		printf("Error Usage!\r\n");
@@ -49,24 +50,22 @@ int main(int argc, char *argv[])
 	}
 
 	databuf[0] = atoi(argv[2]);	/* 要执行的操作：打开或关闭 */
-	// value[0]=0;
-    // while(1)
-	// {
-    // 	/* 向/dev/pulse文件写入数据 */
-	// 	retvalue = write(fd, value, sizeof(value));
-	// 	if(retvalue < 0){
-	// 		printf("PULSE Control Failed!\r\n");
-	// 		close(fd);
-	// 		return -1;
-	// 	}
-	// 	value[0]=~value[0];
-	// 	// usleep(databuf[0]*500);
-	// 	sleep(databuf[0]);
-	// }
-	
+	value[0]=0;
+    for(i=0;i<1000;i++)
+	{
+    	/* 向/dev/pulse文件写入数据 */
+		retvalue = write(fd, value, sizeof(value));
+		if(retvalue < 0){
+			printf("PULSE Control Failed!\r\n");
+			close(fd);
+			return -1;
+		}
+		value[0]=~value[0];
+		usleep(500);
+		// sleep();
+	}
     ///测试脉冲输出开关
-	 write(fd, databuf, sizeof(databuf));
-
+	//  write(fd, databuf, sizeof(databuf));
 
 	retvalue = close(fd); /* 关闭文件 */
 	if(retvalue < 0){

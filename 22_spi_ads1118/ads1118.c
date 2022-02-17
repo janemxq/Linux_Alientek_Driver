@@ -36,6 +36,7 @@ Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 #define ADS1118_NAME	"ads1118"
 #define ADS1118_NUM_CHANS 5
 #define ADS1118_TEMP_CHAN 4
+static int testPaulseIO=0;
 struct ads_table {
 	unsigned int rates[8];
 	unsigned int divisor;
@@ -419,20 +420,23 @@ int16_t ADS_SEL_Read(struct Ads1118_dev *ads,uint8_t road,uint8_t Ref,uint8_t mo
 static int ads1118_testIO(struct Ads1118_dev *ads)
 {
 	int i;
-	printk(" ads1118_testIO 1");
-	for (i = 0; i <100;i++) 
+	// printk(" ads1118_testIO 1");
+	// testPaulseIO=0;
+	for (i = 0; i <1000;i++) 
 	{
-      gpio_set_value(ads->cs_gpio, 0);			/* 片选拉低 */
-      gpio_set_value(ads->mosi_gpio, 0);
-      gpio_set_value(ads->sclk_gpio, 0);
-      gpio_get_value(ads->miso_gpio);
-	   mdelay(10);
-	  gpio_set_value(ads->cs_gpio, 1);			/* 片选拉低 */
-	  gpio_set_value(ads->mosi_gpio, 1);
-	  gpio_set_value(ads->sclk_gpio, 1);
-      gpio_get_value(ads->miso_gpio);
+		testPaulseIO=~testPaulseIO;
+    //   gpio_set_value(ads->cs_gpio, 0);			/* 片选拉低 */
+      gpio_set_value(ads->mosi_gpio, testPaulseIO);
+      gpio_set_value(ads->sclk_gpio, testPaulseIO);
+    //   gpio_get_value(ads->miso_gpio);
+	//    mdelay(100);
+	//   gpio_set_value(ads->cs_gpio, 1);			/* 片选拉低 */
+	//   gpio_set_value(ads->mosi_gpio, 1);
+	//   gpio_set_value(ads->sclk_gpio, 1);
+	  mdelay(1);
+    //   gpio_get_value(ads->miso_gpio);
 	}
-	printk(" ads1118_testIO 1");
+	// printk(" ads1118_testIO 1");
 	return 1;
 }
 // static int ads1118_read_adc(struct Ads1118_dev *ads, struct ads_channel *chan,
@@ -566,35 +570,37 @@ static ssize_t ads1118_read(struct file *filp, int16_t __user *buf, size_t cnt, 
 	int channel=0;
 	int16_t value[5];
 	struct Ads1118_dev *dev = (struct Ads1118_dev *)filp->private_data;
-	for (channel = 0; channel <5;)
-	{
-		if(READ_MISO(dev->miso_gpio)==0)
-		{
-			value[channel]=ADS_SEL_Read(dev,channel+4,0,0); //读取通道
-			if(channel==4) 
-			{
-				ADS_SEL_Read(dev,4,0,1);//配置下一通道
-				udelay(100);
-				ADS_SEL_Read(dev,4,0,1);//配置下一通道1
-			}
-			else
-			{
-				ADS_SEL_Read(dev,channel+5,0,1);  //配置下一通道
-				udelay(100);
-				ADS_SEL_Read(dev,channel+5,0,1);  //配置下一通道
-			} 
-			// printk(" channel1%02d  value:%X \n",channel,value[channel]);
-			channel++;
-		}
+	// for (channel = 0; channel <5;)
+	// {
+	// 	if(READ_MISO(dev->miso_gpio)==0)
+	// 	{
+	// 		value[channel]=ADS_SEL_Read(dev,channel+4,0,0); //读取通道
+	// 		if(channel==4) 
+	// 		{
+	// 			ADS_SEL_Read(dev,4,0,1);//配置下一通道
+	// 			udelay(100);
+	// 			ADS_SEL_Read(dev,4,0,1);//配置下一通道1
+	// 		}
+	// 		else
+	// 		{
+	// 			ADS_SEL_Read(dev,channel+5,0,1);  //配置下一通道
+	// 			udelay(100);
+	// 			ADS_SEL_Read(dev,channel+5,0,1);  //配置下一通道
+	// 		} 
+	// 		// printk(" channel1%02d  value:%X \n",channel,value[channel]);
+	// 		channel++;
+	// 	}
 		
-		mdelay(200);
-		// printk(" channel1%02d  value:%X \n",channel,value[channel]);
-	}
-	if(channel==5)
-	{
-       printk(" channel1-5 :  %04X %04X %04X %04X %04X\n",value[0],value[1],value[2],value[3],value[4]);
-	   copy_to_user(buf, value, sizeof(value));
-	}
+	// 	mdelay(200);
+	// 	// printk(" channel1%02d  value:%X \n",channel,value[channel]);
+	// }
+	// if(channel==5)
+	// {
+    //    printk(" channel1-5 :  %04X %04X %04X %04X %04X\n",value[0],value[1],value[2],value[3],value[4]);
+	//    copy_to_user(buf, value, sizeof(value));
+	// }
+
+	ads1118_testIO(dev);
 	// printk(" miso  value:%X \n",READ_MISO(dev->miso_gpio));
 	return 0;
 }
@@ -733,18 +739,18 @@ static int ads1118_probe(struct spi_device *spi)
 		return -EINVAL;
 	}
 	/* 3、设置GPIO1_IO20为输出，并且输出高电平 */
-	gpio_direction_output(ads1118dev.cs_gpio, 1);
+	// gpio_direction_output(ads1118dev.cs_gpio, 1);
 	gpio_direction_output(ads1118dev.mosi_gpio,1);
-	gpio_direction_input(ads1118dev.miso_gpio);
+	// gpio_direction_input(ads1118dev.miso_gpio);
 	gpio_direction_output(ads1118dev.sclk_gpio, 1);
 	
 	// ret=gpio_request_one(ads1118dev.device,ads1118dev.sclk_gpio,GPIOF_DIR_OUT);
 	// if(ret != 0) {
 	// 	printk("can't set gpio! ret=%d\n", ret);
 	// }
-	printk("ads1118dev.cs_gpio =%d\r\n", ads1118dev.cs_gpio);
+	// printk("ads1118dev.cs_gpio =%d\r\n", ads1118dev.cs_gpio);
 	printk("ads1118dev.mosi_gpio =%d\r\n", ads1118dev.mosi_gpio);
-	printk("ads1118dev.miso_gpio =%d\r\n", ads1118dev.miso_gpio);
+	// printk("ads1118dev.miso_gpio =%d\r\n", ads1118dev.miso_gpio);
 	printk("ads1118dev.sclk_gpio =%d\r\n", ads1118dev.sclk_gpio);
 	
 	/*初始化spi_device */

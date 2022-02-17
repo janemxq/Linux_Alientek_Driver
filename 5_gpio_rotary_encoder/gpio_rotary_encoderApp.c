@@ -25,6 +25,8 @@ Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 static struct input_event inputevent;
 static int count=0;
 static struct timeval oldtime;
+static int aState;
+static int aLastState; 
 /*
  * @description		: main主程序
  * @param - argc 	: argv数组元素个数
@@ -84,6 +86,12 @@ int main(int argc, char *argv[])
 			printf("encoder read Failed!\r\n");
 			close(fd);
 			return -1;
+		}
+		aState=value[0];
+		if(aLastState !=aState)
+		{
+			printf("count=%d....",(count++)/2);
+			aLastState=aState;
 		}
 		// sleep(1);
 	}

@@ -68,23 +68,23 @@ int main(int argc, char *argv[])
 			// ret = write(fd, &chip, 1);
 			ret = read(fd, databuf, sizeof(databuf));
 			if(ret == 0) { 			/* 数据读取成功 */
-				for(ch=0;ch<4;ch++)
-				{
-					ADValues[ch]=analyzeAD1118_mv(databuf[ch]);
-				}
-				ADValues[4]=databuf[4]*0.03125;
-				time(&tt);
-                t = localtime(&tt);		
-				sprintf(recbuf,"[%4d年%02d月%02d日 %02d:%02d:%02d] 通道1 = %0.2f mv, 通道2 = %0.2f mv 通道3 = %0.2f mv, 通道4 = %0.2f mv 温度 = %0.2f\r\n",  
-				 t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec,
-				 ADValues[0], ADValues[1] , ADValues[2], ADValues[3],ADValues[4]);
-				printf(recbuf);
+				// for(ch=0;ch<4;ch++)
+				// {
+				// 	ADValues[ch]=analyzeAD1118_mv(databuf[ch]);
+				// }
+				// ADValues[4]=databuf[4]*0.03125;
+				// time(&tt);
+                // t = localtime(&tt);		
+				// sprintf(recbuf,"[%4d年%02d月%02d日 %02d:%02d:%02d] 通道1 = %0.2f mv, 通道2 = %0.2f mv 通道3 = %0.2f mv, 通道4 = %0.2f mv 温度 = %0.2f\r\n",  
+				//  t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec,
+				//  ADValues[0], ADValues[1] , ADValues[2], ADValues[3],ADValues[4]);
+				// printf(recbuf);
 			// 	// write(fd_rec, recbuf, strlen(recbuf));
 			// 	// printf("通道1 = %06d 克, 通道2= %06d 克\r\n", ADValues[0], ADValues[1]);
 			// 	// usleep(100000); /*100ms */
 			// 	sleep(1);/*1s*/
 		    }
-			sleep(1);/*1s*/
+			 sleep(5);/*1s*/
 		}
 	}
 	close(fd);	/* 关闭文件 */	

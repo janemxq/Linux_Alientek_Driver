@@ -83,17 +83,17 @@ void timer_function(unsigned long arg)
 	struct irq_encoderdesc *encoderdesc;
 	struct gpioencoder_dev* dev = (struct gpioencoder_dev *)arg;
 
-	aState = gpio_get_value(dev->encoder_gpio[0]); 	/* 读取IO值 */
+	aState = gpio_get_value(dev->encoder_gpio[1]); 	/* 读取IO值 */
 	if(aState != aLastState)
 	{ 						/* 产生脉冲了 */
-		if(aState !=gpio_get_value(dev->encoder_gpio[1]))
-		{
-			counter++;//正转
-		}else
-		{
-			counter--;//反转
-		}
-		printk("counter=%d....\r\n",counter);
+		// if(aState !=gpio_get_value(dev->encoder_gpio[1]))
+		// {
+		// 	counter++;//正转
+		// }else
+		// {
+		// 	counter--;//反转
+		// }
+		printk("counter=%d....\r\n",counter++);
 		aLastState=aState;
 	} 
 	// printk("定时中断进来了....\r\n");
@@ -114,12 +114,35 @@ static ssize_t encoder_read(struct file *filp, char __user *buf, size_t cnt, lof
 	struct gpioencoder_dev *dev = filp->private_data;
 
 	// databuf[0]=(gpio_get_value(dev->encoder_gpio[1])<<1|gpio_get_value(dev->encoder_gpio[0]));
+	databuf[0]=(gpio_get_value(dev->encoder_gpio[0]));
     // printk("gpio 0=%d 1=%d\r\n",gpio_get_value(dev->encoder_gpio[0]),gpio_get_value(dev->encoder_gpio[1]));
 	retvalue = copy_to_user(buf, &databuf, 1);
 	if(retvalue < 0) {
 		printk("kernel write failed!\r\n");
 		return -EFAULT;
 	}
+
+
+	///--------------读口的状态
+	// unsigned char value;
+	// unsigned char num;
+	// struct irq_encoderdesc *encoderdesc;
+	// struct gpioencoder_dev* dev = filp->private_data;
+
+	// aState = gpio_get_value(dev->encoder_gpio[0]); 	/* 读取IO值 */
+
+	// if(aState != aLastState)
+	// { 						/* 产生脉冲了 */
+	// 	// if(aState !=gpio_get_value(dev->encoder_gpio[1]))
+	// 	// {
+	// 	// 	counter++;//正转
+	// 	// }else
+	// 	// {
+	// 	// 	counter--;//反转
+	// 	// }
+	// 	printk("counter=%d....\r\n",counter++);
+	// 	aLastState=aState;
+	// } 
 	return 0;
 }
 
@@ -147,8 +170,8 @@ static int encoder_release(struct inode *inode, struct file *filp)
 	// del_timer_sync(&gpioencoderdev.timer);	/* 删除定时器 */
 		
 	/* 释放中断 */
-	free_irq(gpioencoderdev.irqencoderdesc.irqnum, &gpioencoderdev);
-	printk("釋放中断。。。。\r\n");
+	// free_irq(gpioencoderdev.irqencoderdesc.irqnum, &gpioencoderdev);
+	// printk("釋放中断。。。。\r\n");
 	return 0;
 }
 
@@ -173,8 +196,8 @@ static irqreturn_t encoder_handler(int irq, void *dev_id)
 	// dev->curkeynum = 0;
 	// dev->timer.data = (volatile long)dev_id;
 	// mod_timer(&dev->timer, jiffies + usecs_to_jiffies(100));	/* 10ms定时 */
-	// timer_function(dev);
-	printk("当前计数: count=%d",counter++);
+	timer_function(dev);
+	// printk("当前计数: count=%d",counter++);
 	return IRQ_RETVAL(IRQ_HANDLED);
 }
 /*
@@ -223,14 +246,14 @@ static int __init encoder_init(void)
 	/* 初始化编码器所使用的IO，并且设置成中断模式 */
 	memset(gpioencoderdev.irqencoderdesc.name, 0, sizeof(name));	/* 缓冲区清零 */
 	sprintf(gpioencoderdev.irqencoderdesc.name, "ENCODER");		/* 组合名字 */
-	gpio_request(gpioencoderdev.encoder_gpio[1], name);
-	gpio_direction_input(gpioencoderdev.encoder_gpio[0]);	
-	gpioencoderdev.irqencoderdesc.irqnum = gpio_to_irq(gpioencoderdev.encoder_gpio[0]);
+	gpio_request(gpioencoderdev.encoder_gpio[1], name);//1:B  接了电容  0:A 没接电容
+	gpio_direction_input(gpioencoderdev.encoder_gpio[1]);	
+	gpioencoderdev.irqencoderdesc.irqnum = gpio_to_irq(gpioencoderdev.encoder_gpio[1]);
 	/* 申请中断 */
 	gpioencoderdev.irqencoderdesc.handler = encoder_handler;
 	gpioencoderdev.irqencoderdesc.value = REL_X;
 	ret = request_irq(gpioencoderdev.irqencoderdesc.irqnum, gpioencoderdev.irqencoderdesc.handler, 
-		                IRQF_TRIGGER_RISING, gpioencoderdev.irqencoderdesc.name, &gpioencoderdev);
+		                IRQF_TRIGGER_FALLING|IRQF_TRIGGER_RISING, gpioencoderdev.irqencoderdesc.name, &gpioencoderdev);
 	if(ret < 0){
 		printk("irq %d request failed!\r\n", gpioencoderdev.irqencoderdesc.irqnum);
 		return -EFAULT;
