@@ -1,1 +1,0 @@
-cmd_/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.ko := arm-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.ko /home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.o /home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o

@@ -5,6 +5,7 @@
 #include "fcntl.h"
 #include "stdlib.h"
 #include "string.h"
+#include <stdint.h>
 /***************************************************************
 Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 文件名		: ledApp.c
@@ -20,6 +21,16 @@ Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 
 #define LEDOFF 	0
 #define LEDON 	1
+typedef uint64_t u64;
+static void sleep_nsecs(u64 nsecs)
+{
+	struct timespec ts;
+
+	ts.tv_nsec = nsecs % 999999999;
+	ts.tv_sec = nsecs / 999999999;
+
+	nanosleep(&ts, NULL);
+}
 
 /*
  * @description		: main主程序
@@ -51,7 +62,8 @@ int main(int argc, char *argv[])
 
 	databuf[0] = atoi(argv[2]);	/* 要执行的操作：打开或关闭 */
 	value[0]=0;
-    for(i=0;i<1000;i++)
+    for(i=0;i<500;i++)
+    // while(1)
 	{
     	/* 向/dev/pulse文件写入数据 */
 		retvalue = write(fd, value, sizeof(value));
@@ -61,8 +73,9 @@ int main(int argc, char *argv[])
 			return -1;
 		}
 		value[0]=~value[0];
-		usleep(500);
-		// sleep();
+		// usleep(1);
+		// sleep(1);
+		sleep_nsecs(1);//用示波器看其实 大约200us 不准确
 	}
     ///测试脉冲输出开关
 	//  write(fd, databuf, sizeof(databuf));

@@ -1,4 +1,4 @@
-cmd_/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/gpio_rotary_encoder.o := arm-linux-gnueabihf-gcc -Wp,-MD,/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/.gpio_rotary_encoder.o.d  -nostdinc -isystem /usr/local/arm/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/4.9.4/include -I./arch/arm/include -Iarch/arm/include/generated/uapi -Iarch/arm/include/generated  -Iinclude -I./arch/arm/include/uapi -Iarch/arm/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-dwarf2-cfi-asm -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -fno-delete-null-pointer-checks -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -fomit-frame-pointer -fno-var-tracking-assignments -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO  -DMODULE  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(gpio_rotary_encoder)"  -D"KBUILD_MODNAME=KBUILD_STR(gpio_rotary_encoder)" -c -o /home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/.tmp_gpio_rotary_encoder.o /home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/gpio_rotary_encoder.c
+cmd_/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/gpio_rotary_encoder.o := arm-poky-linux-gnueabi-gcc -Wp,-MD,/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/.gpio_rotary_encoder.o.d  -nostdinc -isystem /opt/fsl-imx-x11/4.1.15-2.1.0/sysroots/x86_64-pokysdk-linux/usr/lib/arm-poky-linux-gnueabi/gcc/arm-poky-linux-gnueabi/5.3.0/include -I./arch/arm/include -Iarch/arm/include/generated/uapi -Iarch/arm/include/generated  -Iinclude -I./arch/arm/include/uapi -Iarch/arm/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=apcs-gnu -mno-thumb-interwork -marm -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -fno-delete-null-pointer-checks -O2 --param=allow-store-data-races=0 -Wframe-larger-than=2048 -fno-stack-protector -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO --sysroot=/opt/fsl-imx-x11/4.1.15-2.1.0/sysroots/cortexa7hf-neon-poky-linux-gnueabi  -DMODULE  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(gpio_rotary_encoder)"  -D"KBUILD_MODNAME=KBUILD_STR(gpio_rotary_encoder)" -c -o /home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/.tmp_gpio_rotary_encoder.o /home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/gpio_rotary_encoder.c
 
 source_/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/gpio_rotary_encoder.o := /home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/gpio_rotary_encoder.c
 
@@ -42,7 +42,7 @@ deps_/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/gpio_rotary_enco
     $(wildcard include/config/ring/buffer.h) \
     $(wildcard include/config/tracing.h) \
     $(wildcard include/config/ftrace/mcount/record.h) \
-  /usr/local/arm/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf/lib/gcc/arm-linux-gnueabihf/4.9.4/include/stdarg.h \
+  /opt/fsl-imx-x11/4.1.15-2.1.0/sysroots/x86_64-pokysdk-linux/usr/lib/arm-poky-linux-gnueabi/gcc/arm-poky-linux-gnueabi/5.3.0/include/stdarg.h \
   include/linux/linkage.h \
   include/linux/stringify.h \
   include/linux/export.h \
@@ -126,15 +126,6 @@ deps_/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/gpio_rotary_enco
   include/uapi/asm-generic/errno-base.h \
   arch/arm/include/asm/div64.h \
   arch/arm/include/asm/compiler.h \
-  arch/arm/include/asm/bug.h \
-    $(wildcard include/config/bug.h) \
-    $(wildcard include/config/debug/bugverbose.h) \
-    $(wildcard include/config/arm/lpae.h) \
-  arch/arm/include/asm/opcodes.h \
-    $(wildcard include/config/cpu/endian/be32.h) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/generic/bug.h) \
-    $(wildcard include/config/generic/bug/relative/pointers.h) \
   include/linux/delay.h \
   arch/arm/include/asm/delay.h \
   arch/arm/include/asm/memory.h \
@@ -144,6 +135,7 @@ deps_/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/gpio_rotary_enco
     $(wildcard include/config/dram/base.h) \
     $(wildcard include/config/dram/size.h) \
     $(wildcard include/config/have/tcm.h) \
+    $(wildcard include/config/arm/lpae.h) \
     $(wildcard include/config/arm/patch/phys/virt.h) \
     $(wildcard include/config/phys/offset.h) \
     $(wildcard include/config/virt/to/bus.h) \
@@ -272,6 +264,14 @@ deps_/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/gpio_rotary_enco
   include/asm-generic/preempt.h \
   include/linux/thread_info.h \
   include/linux/bug.h \
+    $(wildcard include/config/generic/bug.h) \
+  arch/arm/include/asm/bug.h \
+    $(wildcard include/config/bug.h) \
+    $(wildcard include/config/debug/bugverbose.h) \
+  arch/arm/include/asm/opcodes.h \
+    $(wildcard include/config/cpu/endian/be32.h) \
+  include/asm-generic/bug.h \
+    $(wildcard include/config/generic/bug/relative/pointers.h) \
   arch/arm/include/asm/thread_info.h \
     $(wildcard include/config/crunch.h) \
     $(wildcard include/config/arm/thumbee.h) \
@@ -349,6 +349,7 @@ deps_/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/gpio_rotary_enco
     $(wildcard include/config/cpu/v6.h) \
   include/asm-generic/cmpxchg-local.h \
   include/asm-generic/atomic-long.h \
+  include/asm-generic/atomic64.h \
   include/linux/math64.h \
     $(wildcard include/config/arch/supports/int128.h) \
   include/linux/time64.h \
@@ -516,6 +517,12 @@ deps_/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/gpio_rotary_enco
     $(wildcard include/config/have/arch/seccomp/filter.h) \
     $(wildcard include/config/seccomp/filter.h) \
   include/uapi/linux/seccomp.h \
+  arch/arm/include/generated/asm/seccomp.h \
+  include/asm-generic/seccomp.h \
+  include/uapi/linux/unistd.h \
+  arch/arm/include/asm/unistd.h \
+    $(wildcard include/config/oabi/compat.h) \
+  arch/arm/include/uapi/asm/unistd.h \
   include/linux/rculist.h \
   include/linux/rtmutex.h \
     $(wildcard include/config/debug/rt/mutexes.h) \
@@ -584,9 +591,6 @@ deps_/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/gpio_rotary_enco
   include/linux/kref.h \
   include/linux/klist.h \
   include/linux/pinctrl/devinfo.h \
-  include/linux/pinctrl/consumer.h \
-  include/linux/seq_file.h \
-  include/linux/pinctrl/pinctrl-state.h \
   include/linux/pm.h \
     $(wildcard include/config/vt/console/sleep.h) \
     $(wildcard include/config/pm/clk.h) \
@@ -746,7 +750,6 @@ deps_/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/gpio_rotary_enco
   arch/arm/include/asm/cachetype.h \
     $(wildcard include/config/cpu/cache/vivt.h) \
   arch/arm/include/asm/kmap_types.h \
-  arch/arm/include/asm/highmem.h \
   include/linux/hugetlb_inline.h \
   include/linux/backing-dev.h \
     $(wildcard include/config/debug/fs.h) \
@@ -816,6 +819,8 @@ deps_/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/gpio_rotary_enco
   include/uapi/linux/pci.h \
   include/uapi/linux/pci_regs.h \
   include/linux/pci_ids.h \
+  include/linux/pci-dma.h \
+  include/linux/dmapool.h \
   arch/arm/include/asm/pci.h \
   include/asm-generic/pci-dma-compat.h \
   include/linux/dma-mapping.h \

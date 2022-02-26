@@ -1,42 +1,21 @@
-cmd_/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o := arm-linux-gnueabihf-gcc -Wp,-MD,/home/alientek/2、Linux驱动例程/5_gpio_paulse/.gpiopaulse.mod.o.d  -nostdinc -isystem /usr/local/arm/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/4.9.4/include -I./arch/arm/include -Iarch/arm/include/generated/uapi -Iarch/arm/include/generated  -Iinclude -I./arch/arm/include/uapi -Iarch/arm/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-dwarf2-cfi-asm -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -fno-delete-null-pointer-checks -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -fomit-frame-pointer -fno-var-tracking-assignments -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(gpiopaulse.mod)"  -D"KBUILD_MODNAME=KBUILD_STR(gpiopaulse)" -DMODULE  -c -o /home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o /home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.c
+cmd_/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/rotary_encoder.o := arm-poky-linux-gnueabi-gcc -Wp,-MD,/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/.rotary_encoder.o.d  -nostdinc -isystem /opt/fsl-imx-x11/4.1.15-2.1.0/sysroots/x86_64-pokysdk-linux/usr/lib/arm-poky-linux-gnueabi/gcc/arm-poky-linux-gnueabi/5.3.0/include -I./arch/arm/include -Iarch/arm/include/generated/uapi -Iarch/arm/include/generated  -Iinclude -I./arch/arm/include/uapi -Iarch/arm/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=apcs-gnu -mno-thumb-interwork -marm -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -fno-delete-null-pointer-checks -O2 --param=allow-store-data-races=0 -Wframe-larger-than=2048 -fno-stack-protector -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO --sysroot=/opt/fsl-imx-x11/4.1.15-2.1.0/sysroots/cortexa7hf-neon-poky-linux-gnueabi  -DMODULE  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(rotary_encoder)"  -D"KBUILD_MODNAME=KBUILD_STR(rotary_encoder)" -c -o /home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/.tmp_rotary_encoder.o /home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/rotary_encoder.c
 
-source_/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o := /home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.c
+source_/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/rotary_encoder.o := /home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/rotary_encoder.c
 
-deps_/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o := \
-    $(wildcard include/config/module/unload.h) \
-  include/linux/module.h \
-    $(wildcard include/config/sysfs.h) \
-    $(wildcard include/config/modules.h) \
-    $(wildcard include/config/unused/symbols.h) \
-    $(wildcard include/config/module/sig.h) \
-    $(wildcard include/config/generic/bug.h) \
-    $(wildcard include/config/kallsyms.h) \
-    $(wildcard include/config/smp.h) \
-    $(wildcard include/config/tracepoints.h) \
-    $(wildcard include/config/tracing.h) \
-    $(wildcard include/config/event/tracing.h) \
-    $(wildcard include/config/ftrace/mcount/record.h) \
-    $(wildcard include/config/livepatch.h) \
-    $(wildcard include/config/constructors.h) \
-    $(wildcard include/config/debug/set/module/ronx.h) \
-  include/linux/list.h \
-    $(wildcard include/config/debug/list.h) \
-  include/linux/types.h \
-    $(wildcard include/config/uid16.h) \
+deps_/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/rotary_encoder.o := \
+    $(wildcard include/config/of.h) \
+  include/linux/kernel.h \
     $(wildcard include/config/lbdaf.h) \
-    $(wildcard include/config/arch/dma/addr/t/64bit.h) \
-    $(wildcard include/config/phys/addr/t/64bit.h) \
-    $(wildcard include/config/64bit.h) \
-  include/uapi/linux/types.h \
-  arch/arm/include/asm/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/arm/include/generated/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
+    $(wildcard include/config/preempt/voluntary.h) \
+    $(wildcard include/config/debug/atomic/sleep.h) \
+    $(wildcard include/config/mmu.h) \
+    $(wildcard include/config/prove/locking.h) \
+    $(wildcard include/config/panic/timeout.h) \
+    $(wildcard include/config/ring/buffer.h) \
+    $(wildcard include/config/tracing.h) \
+    $(wildcard include/config/ftrace/mcount/record.h) \
+  /opt/fsl-imx-x11/4.1.15-2.1.0/sysroots/x86_64-pokysdk-linux/usr/lib/arm-poky-linux-gnueabi/gcc/arm-poky-linux-gnueabi/5.3.0/include/stdarg.h \
+  include/linux/linkage.h \
   include/linux/compiler.h \
     $(wildcard include/config/sparse/rcu/pointer.h) \
     $(wildcard include/config/trace/branch/profiling.h) \
@@ -49,27 +28,33 @@ deps_/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o := \
     $(wildcard include/config/optimize/inlining.h) \
     $(wildcard include/config/gcov/kernel.h) \
     $(wildcard include/config/arch/use/builtin/bswap.h) \
+  include/uapi/linux/types.h \
+  arch/arm/include/asm/types.h \
+  include/asm-generic/int-ll64.h \
+  include/uapi/asm-generic/int-ll64.h \
+  arch/arm/include/generated/asm/bitsperlong.h \
+  include/asm-generic/bitsperlong.h \
+    $(wildcard include/config/64bit.h) \
+  include/uapi/asm-generic/bitsperlong.h \
+  include/uapi/linux/posix_types.h \
+  include/linux/stddef.h \
+  include/uapi/linux/stddef.h \
   arch/arm/include/uapi/asm/posix_types.h \
   include/uapi/asm-generic/posix_types.h \
-  include/linux/poison.h \
-    $(wildcard include/config/illegal/pointer/value.h) \
-  include/uapi/linux/const.h \
-  include/linux/kernel.h \
-    $(wildcard include/config/preempt/voluntary.h) \
-    $(wildcard include/config/debug/atomic/sleep.h) \
-    $(wildcard include/config/mmu.h) \
-    $(wildcard include/config/prove/locking.h) \
-    $(wildcard include/config/panic/timeout.h) \
-    $(wildcard include/config/ring/buffer.h) \
-  /usr/local/arm/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf/lib/gcc/arm-linux-gnueabihf/4.9.4/include/stdarg.h \
-  include/linux/linkage.h \
   include/linux/stringify.h \
   include/linux/export.h \
     $(wildcard include/config/have/underscore/symbol/prefix.h) \
+    $(wildcard include/config/modules.h) \
     $(wildcard include/config/modversions.h) \
+    $(wildcard include/config/unused/symbols.h) \
   arch/arm/include/asm/linkage.h \
+  include/linux/types.h \
+    $(wildcard include/config/uid16.h) \
+    $(wildcard include/config/arch/dma/addr/t/64bit.h) \
+    $(wildcard include/config/phys/addr/t/64bit.h) \
   include/linux/bitops.h \
   arch/arm/include/asm/bitops.h \
+    $(wildcard include/config/smp.h) \
   include/linux/irqflags.h \
     $(wildcard include/config/trace/irqflags.h) \
     $(wildcard include/config/irqsoff/tracer.h) \
@@ -142,14 +127,22 @@ deps_/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o := \
   include/uapi/asm-generic/errno-base.h \
   arch/arm/include/asm/div64.h \
   arch/arm/include/asm/compiler.h \
-  arch/arm/include/asm/bug.h \
-    $(wildcard include/config/bug.h) \
-    $(wildcard include/config/debug/bugverbose.h) \
-    $(wildcard include/config/arm/lpae.h) \
-  arch/arm/include/asm/opcodes.h \
-    $(wildcard include/config/cpu/endian/be32.h) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/generic/bug/relative/pointers.h) \
+  include/linux/module.h \
+    $(wildcard include/config/sysfs.h) \
+    $(wildcard include/config/module/sig.h) \
+    $(wildcard include/config/generic/bug.h) \
+    $(wildcard include/config/kallsyms.h) \
+    $(wildcard include/config/tracepoints.h) \
+    $(wildcard include/config/event/tracing.h) \
+    $(wildcard include/config/livepatch.h) \
+    $(wildcard include/config/module/unload.h) \
+    $(wildcard include/config/constructors.h) \
+    $(wildcard include/config/debug/set/module/ronx.h) \
+  include/linux/list.h \
+    $(wildcard include/config/debug/list.h) \
+  include/linux/poison.h \
+    $(wildcard include/config/illegal/pointer/value.h) \
+  include/uapi/linux/const.h \
   include/linux/stat.h \
   arch/arm/include/uapi/asm/stat.h \
   include/uapi/linux/stat.h \
@@ -172,6 +165,14 @@ deps_/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o := \
     $(wildcard include/config/compat.h) \
     $(wildcard include/config/debug/stack/usage.h) \
   include/linux/bug.h \
+  arch/arm/include/asm/bug.h \
+    $(wildcard include/config/bug.h) \
+    $(wildcard include/config/debug/bugverbose.h) \
+    $(wildcard include/config/arm/lpae.h) \
+  arch/arm/include/asm/opcodes.h \
+    $(wildcard include/config/cpu/endian/be32.h) \
+  include/asm-generic/bug.h \
+    $(wildcard include/config/generic/bug/relative/pointers.h) \
   arch/arm/include/asm/thread_info.h \
     $(wildcard include/config/crunch.h) \
     $(wildcard include/config/arm/thumbee.h) \
@@ -266,6 +267,7 @@ deps_/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o := \
     $(wildcard include/config/cpu/v6.h) \
   include/asm-generic/cmpxchg-local.h \
   include/asm-generic/atomic-long.h \
+  include/asm-generic/atomic64.h \
   include/linux/math64.h \
     $(wildcard include/config/arch/supports/int128.h) \
   include/linux/time64.h \
@@ -431,9 +433,161 @@ deps_/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o := \
     $(wildcard include/config/have/mod/arch/specific.h) \
     $(wildcard include/config/modules/use/elf/rel.h) \
     $(wildcard include/config/modules/use/elf/rela.h) \
-  include/linux/vermagic.h \
-  include/generated/utsrelease.h \
+  include/linux/interrupt.h \
+    $(wildcard include/config/irq/forced/threading.h) \
+    $(wildcard include/config/generic/irq/probe.h) \
+    $(wildcard include/config/proc/fs.h) \
+  include/linux/irqreturn.h \
+  include/linux/irqnr.h \
+  include/uapi/linux/irqnr.h \
+  include/linux/hardirq.h \
+  include/linux/ftrace_irq.h \
+    $(wildcard include/config/ftrace/nmi/enter.h) \
+  include/linux/vtime.h \
+    $(wildcard include/config/virt/cpu/accounting/native.h) \
+    $(wildcard include/config/virt/cpu/accounting/gen.h) \
+    $(wildcard include/config/virt/cpu/accounting.h) \
+    $(wildcard include/config/irq/time/accounting.h) \
+  include/linux/context_tracking_state.h \
+  include/linux/static_key.h \
+  arch/arm/include/asm/hardirq.h \
+  arch/arm/include/asm/irq.h \
+    $(wildcard include/config/sparse/irq.h) \
+    $(wildcard include/config/multi/irq/handler.h) \
+  include/linux/irq_cpustat.h \
+  include/linux/hrtimer.h \
+    $(wildcard include/config/high/res/timers.h) \
+    $(wildcard include/config/timerfd.h) \
+  include/linux/timerqueue.h \
+  include/linux/input.h \
+  include/uapi/linux/input.h \
+  include/linux/device.h \
+    $(wildcard include/config/debug/devres.h) \
+    $(wildcard include/config/pinctrl.h) \
+    $(wildcard include/config/dma/cma.h) \
+    $(wildcard include/config/devtmpfs.h) \
+    $(wildcard include/config/sysfs/deprecated.h) \
+  include/linux/ioport.h \
+  include/linux/klist.h \
+  include/linux/pinctrl/devinfo.h \
+    $(wildcard include/config/pm.h) \
+  include/linux/pm.h \
+    $(wildcard include/config/vt/console/sleep.h) \
+    $(wildcard include/config/pm/clk.h) \
+    $(wildcard include/config/pm/generic/domains.h) \
+  include/linux/ratelimit.h \
+  arch/arm/include/asm/device.h \
+    $(wildcard include/config/dmabounce.h) \
+    $(wildcard include/config/iommu/api.h) \
+    $(wildcard include/config/arm/dma/use/iommu.h) \
+    $(wildcard include/config/arch/omap.h) \
+  include/linux/pm_wakeup.h \
+  include/linux/fs.h \
+    $(wildcard include/config/fs/posix/acl.h) \
+    $(wildcard include/config/security.h) \
+    $(wildcard include/config/ima.h) \
+    $(wildcard include/config/fsnotify.h) \
+    $(wildcard include/config/epoll.h) \
+    $(wildcard include/config/file/locking.h) \
+    $(wildcard include/config/quota.h) \
+    $(wildcard include/config/fs/dax.h) \
+    $(wildcard include/config/block.h) \
+    $(wildcard include/config/migration.h) \
+  include/linux/kdev_t.h \
+  include/uapi/linux/kdev_t.h \
+  include/linux/dcache.h \
+  include/linux/rculist.h \
+  include/linux/rculist_bl.h \
+  include/linux/list_bl.h \
+  include/linux/bit_spinlock.h \
+  include/linux/lockref.h \
+    $(wildcard include/config/arch/use/cmpxchg/lockref.h) \
+  include/linux/path.h \
+  include/linux/list_lru.h \
+    $(wildcard include/config/memcg/kmem.h) \
+  include/linux/shrinker.h \
+  include/linux/radix-tree.h \
+  include/linux/pid.h \
+  include/linux/capability.h \
+  include/uapi/linux/capability.h \
+  include/linux/semaphore.h \
+  include/uapi/linux/fiemap.h \
+  include/linux/migrate_mode.h \
+  include/linux/percpu-rwsem.h \
+  include/linux/blk_types.h \
+    $(wildcard include/config/blk/cgroup.h) \
+    $(wildcard include/config/blk/dev/integrity.h) \
+  include/uapi/linux/fs.h \
+  include/uapi/linux/limits.h \
+  include/uapi/linux/ioctl.h \
+  arch/arm/include/generated/asm/ioctl.h \
+  include/asm-generic/ioctl.h \
+  include/uapi/asm-generic/ioctl.h \
+  include/linux/quota.h \
+    $(wildcard include/config/quota/netlink/interface.h) \
+  include/linux/percpu_counter.h \
+  include/uapi/linux/dqblk_xfs.h \
+  include/linux/dqblk_v1.h \
+  include/linux/dqblk_v2.h \
+  include/linux/dqblk_qtree.h \
+  include/linux/projid.h \
+  include/uapi/linux/quota.h \
+  include/linux/nfs_fs_i.h \
+  include/linux/fcntl.h \
+  include/uapi/linux/fcntl.h \
+  arch/arm/include/uapi/asm/fcntl.h \
+  include/uapi/asm-generic/fcntl.h \
+  include/linux/mod_devicetable.h \
+  include/linux/uuid.h \
+  include/uapi/linux/uuid.h \
+  include/linux/platform_device.h \
+    $(wildcard include/config/suspend.h) \
+    $(wildcard include/config/hibernate/callbacks.h) \
+  include/linux/gpio.h \
+    $(wildcard include/config/gpiolib.h) \
+    $(wildcard include/config/arch/have/custom/gpio/h.h) \
+  include/linux/pinctrl/pinctrl.h \
+    $(wildcard include/config/generic/pinconf.h) \
+  include/linux/rotary_encoder.h \
+  include/linux/slab.h \
+    $(wildcard include/config/debug/slab.h) \
+    $(wildcard include/config/kmemcheck.h) \
+    $(wildcard include/config/failslab.h) \
+    $(wildcard include/config/slab.h) \
+    $(wildcard include/config/slub.h) \
+    $(wildcard include/config/slob.h) \
+  include/linux/kmemleak.h \
+    $(wildcard include/config/debug/kmemleak.h) \
+  include/linux/kasan.h \
+    $(wildcard include/config/kasan.h) \
+    $(wildcard include/config/kasan/shadow/offset.h) \
+  include/linux/of.h \
+    $(wildcard include/config/sparc.h) \
+    $(wildcard include/config/of/dynamic.h) \
+    $(wildcard include/config/attach/node.h) \
+    $(wildcard include/config/detach/node.h) \
+    $(wildcard include/config/add/property.h) \
+    $(wildcard include/config/remove/property.h) \
+    $(wildcard include/config/update/property.h) \
+    $(wildcard include/config/no/change.h) \
+    $(wildcard include/config/change/add.h) \
+    $(wildcard include/config/change/remove.h) \
+    $(wildcard include/config/of/resolve.h) \
+    $(wildcard include/config/of/overlay.h) \
+  include/linux/property.h \
+  include/linux/fwnode.h \
+  include/linux/of_platform.h \
+    $(wildcard include/config/of/address.h) \
+  include/linux/of_device.h \
+  include/linux/cpu.h \
+    $(wildcard include/config/pm/sleep/smp.h) \
+  include/linux/node.h \
+    $(wildcard include/config/memory/hotplug/sparse.h) \
+    $(wildcard include/config/hugetlbfs.h) \
+  include/linux/of_gpio.h \
+    $(wildcard include/config/of/gpio.h) \
+  include/linux/gpio/machine.h \
 
-/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o: $(deps_/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o)
+/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/rotary_encoder.o: $(deps_/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/rotary_encoder.o)
 
-$(deps_/home/alientek/2、Linux驱动例程/5_gpio_paulse/gpiopaulse.mod.o):
+$(deps_/home/alientek/2、Linux驱动例程/5_gpio_rotary_encoder/rotary_encoder.o):

@@ -24,6 +24,7 @@ Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved.
 /* 定义一个input_event变量，存放输入事件信息 */
 static struct input_event inputevent;
 static int count=0;
+static int loop=0;
 static struct timeval oldtime;
 static int aState;
 static int aLastState; 
@@ -57,19 +58,23 @@ int main(int argc, char *argv[])
     while(1)
 	{
 	   /* ----------------------内置驱动的循环读取数据 */
-	//    err = read(fd, &inputevent, sizeof(inputevent));
-	// 	if (err <=0) {
+	   err = read(fd, &inputevent, sizeof(inputevent));
+		if (err <=0) {
 				
-	// 			perror("read error");
-	// 			exit(-1);
-	// 	}
-    //     if(inputevent.value==1)
-	// 	{
-	// 		count++;
-	// 	}else if(inputevent.value==-1)
-	// 	{
-	// 		count--;
-	// 	}
+				perror("read error");
+				exit(-1);
+		}
+        if(inputevent.value==1)
+		{
+			count++;
+			if(aLastState ==-1) count=0;
+			aLastState=1;
+		}else if(inputevent.value==-1)
+		{
+			count--;
+			if(aLastState ==1) count=0;
+			aLastState=-1;
+		}
 		// if(inputevent.time.tv_usec-oldtime.tv_usec<100 )
 		// {
         //      printf("计数值 =%d 时间=%05d %05d %05d微秒 type:%d code:%d value:%d\n",count,
@@ -79,21 +84,29 @@ int main(int argc, char *argv[])
 		// printf("计数值 =%d 时间=%05d秒%05d微妙 type:%d code:%d value:%d\n",count,
 		// 	inputevent.time.tv_sec,inputevent.time.tv_usec,inputevent.type, inputevent.code, inputevent.value);
 		// oldtime=inputevent.time;
+		if(count %1000 == 0 && inputevent.type == 2)
+		{
+			// printf("计数值 =%d 时间=%05d秒%05d微妙 type:%d code:%d value:%d\n",count,
+			// inputevent.time.tv_sec,inputevent.time.tv_usec,inputevent.type, inputevent.code, inputevent.value);
+			printf("方向:%s  第%d圈 count: %d \r\n",count>0?"顺时针":"逆时针",loop++,count);
+			// count=0;
+
+		}
 
         // ------------------------- 自己的驱动
-		retvalue = read(fd, value, sizeof(value));
-		if(retvalue < 0){
-			printf("encoder read Failed!\r\n");
-			close(fd);
-			return -1;
-		}
-		aState=value[0];
-		if(aLastState !=aState)
-		{
-			printf("count=%d....",(count++)/2);
-			aLastState=aState;
-		}
-		// sleep(1);
+		// retvalue = read(fd, value, sizeof(value));
+		// if(retvalue < 0){
+		// 	printf("encoder read Failed!\r\n");
+		// 	close(fd);
+		// 	return -1;
+		// }
+		// aState=value[0];
+		// if(aLastState !=aState)
+		// {
+		// 	printf("count=%d....",(count++));
+		// 	aLastState=aState;
+		// }
+		// usleep(1000);
 	}
 
 	retvalue = close(fd); /* 关闭文件 */

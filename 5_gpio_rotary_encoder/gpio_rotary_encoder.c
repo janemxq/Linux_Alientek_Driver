@@ -93,7 +93,11 @@ void timer_function(unsigned long arg)
 		// {
 		// 	counter--;//反转
 		// }
-		printk("counter=%d....\r\n",counter++);
+		if(counter % 2000==0)
+		{
+		  printk("counter=%d....",counter);
+		}
+		counter++;
 		aLastState=aState;
 	} 
 	// printk("定时中断进来了....\r\n");
@@ -193,8 +197,8 @@ static irqreturn_t encoder_handler(int irq, void *dev_id)
 {
 	struct gpioencoder_dev *dev = (struct gpioencoder_dev *)dev_id;
 
-	// dev->curkeynum = 0;
-	// dev->timer.data = (volatile long)dev_id;
+	dev->curkeynum = 0;
+	dev->timer.data = (volatile long)dev_id;
 	// mod_timer(&dev->timer, jiffies + usecs_to_jiffies(100));	/* 10ms定时 */
 	timer_function(dev);
 	// printk("当前计数: count=%d",counter++);
@@ -253,14 +257,14 @@ static int __init encoder_init(void)
 	gpioencoderdev.irqencoderdesc.handler = encoder_handler;
 	gpioencoderdev.irqencoderdesc.value = REL_X;
 	ret = request_irq(gpioencoderdev.irqencoderdesc.irqnum, gpioencoderdev.irqencoderdesc.handler, 
-		                IRQF_TRIGGER_FALLING|IRQF_TRIGGER_RISING, gpioencoderdev.irqencoderdesc.name, &gpioencoderdev);
+		                IRQF_TRIGGER_RISING|IRQF_TRIGGER_FALLING, gpioencoderdev.irqencoderdesc.name, &gpioencoderdev);
 	if(ret < 0){
 		printk("irq %d request failed!\r\n", gpioencoderdev.irqencoderdesc.irqnum);
 		return -EFAULT;
 	}
     /* 创建定时器 */
-	// init_timer(&gpioencoderdev.timer);
-	// gpioencoderdev.timer.function = timer_function;
+	init_timer(&gpioencoderdev.timer);
+	gpioencoderdev.timer.function = timer_function;
 	/* 注册字符设备驱动 */
 	/* 1、创建设备号 */
 	if (gpioencoderdev.major) {		/*  定义了设备号 */
@@ -302,6 +306,8 @@ static int __init encoder_init(void)
 static void __exit encoder_exit(void)
 {
 	free_irq(gpioencoderdev.irqencoderdesc.irqnum, &gpioencoderdev);
+	/* 删除定时器 */
+	del_timer_sync(&gpioencoderdev.timer);	/* 删除定时器 */
 	printk("釋放中断。。。。\r\n");
 	/* 注销字符设备驱动 */
 	cdev_del(&gpioencoderdev.cdev);/*  删除cdev */
